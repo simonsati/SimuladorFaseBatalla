@@ -22,6 +22,7 @@ public class ControladorDuelo implements ActionListener {
     public ControladorDuelo(VentanaDuelo vista) {
         this.vista = vista;
         registrarEventos();
+        configurarCampos();
     }
 
     /**
@@ -34,6 +35,13 @@ public class ControladorDuelo implements ActionListener {
 
     private void registrarEventos() {
         vista.getBtnIniciarDuelo().addActionListener(this);
+    }
+
+    /**
+     * Los campos numéricos solo aceptan dígitos (no se pueden escribir letras).
+     */
+    private void configurarCampos() {
+        FiltroNumerico.aplicar(vista.getTxtLpIniciales(), 5);
     }
 
     @Override
