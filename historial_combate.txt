@@ -1,0 +1,13 @@
+# Historial de combate - Simulador de la Fase de Batalla Yu-Gi-Oh!
+# fecha y hora | turno | duelista atacante | monstruo atacante | duelista defensor | monstruo defensor | enfrentamiento | daño | duelista afectado | resultado
+2026-11-19 02:53:40 | 1 | Yugi | Mago Oscuro | Kaiba | Cyber Dragón | Ataque vs Ataque | 400 | Kaiba | Destruido: Cyber Dragón; Kaiba recibe 400 de daño
+2026-11-19 02:53:40 | 1 | Yugi | Guardián Celta | Kaiba | Soldado Gigante de Piedra | Ataque vs Defensa | 600 | Yugi | Sin destrucciones; Yugi recibe 600 de daño
+2026-11-19 02:53:45 | 2 | Kaiba | Dragón Blanco de Ojos Azules | Yugi | Mago Oscuro | Ataque vs Ataque | 500 | Yugi | Destruido: Mago Oscuro; Yugi recibe 500 de daño
+2026-11-19 02:53:46 | 2 | Kaiba | Soldado Gigante de Piedra | Yugi | Kuriboh | Ataque vs Defensa | 0 | Nadie | Destruido: Kuriboh; sin daño
+2026-11-19 02:53:47 | 3 | Yugi | Guardián Celta | Kaiba | Soldado Gigante de Piedra | Ataque vs Ataque | 100 | Kaiba | Destruido: Soldado Gigante de Piedra; Kaiba recibe 100 de daño
+2026-11-19 02:53:47 | 4 | Kaiba | Dragón Blanco de Ojos Azules | Yugi | Elfa Mística | Ataque vs Defensa | 0 | Nadie | Destruido: Elfa Mística; sin daño
+2026-11-19 02:53:49 | 6 | Kaiba | Dragón Blanco de Ojos Azules | Yugi | Dragón Negro de Ojos Rojos | Ataque vs Ataque | 600 | Yugi | Destruido: Dragón Negro de Ojos Rojos; Yugi recibe 600 de daño
+2026-11-19 02:53:50 | 8 | Kaiba | Dragón Blanco de Ojos Azules | Yugi | Guardián Celta | Ataque vs Defensa | 0 | Nadie | Destruido: Guardián Celta; sin daño
+2026-11-19 02:53:51 | 10 | Kaiba | Dragón Blanco de Ojos Azules | Yugi | (ataque directo) | Ataque directo | 3000 | Yugi | Yugi recibe 3000 de daño directo
+2026-11-19 02:53:52 | 12 | Kaiba | Dragón Blanco de Ojos Azules | Yugi | (ataque directo) | Ataque directo | 3000 | Yugi | Yugi recibe 3000 de daño directo
+2026-11-19 02:53:52 | 14 | Kaiba | Dragón Blanco de Ojos Azules | Yugi | (ataque directo) | Ataque directo | 3000 | Yugi | Yugi recibe 3000 de daño directo. ¡Kaiba gana el duelo!
