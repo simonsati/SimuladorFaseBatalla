@@ -1,8 +1,13 @@
 package co.edu.uao.yugioh.modelo;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+
 /**
  * Duelista que participa en la Fase de Batalla. Administra sus Puntos de Vida
- * (LP).
+ * (LP) y los monstruos que controla.
  *
  * @author simonsati
  */
@@ -20,9 +25,13 @@ public class Jugador {
     /** Longitud máxima del nombre de un duelista. */
     public static final int LONGITUD_MAXIMA_NOMBRE = 20;
 
+    /** Zonas de monstruo disponibles en el campo de cada duelista. */
+    public static final int MAX_MONSTRUOS_EN_CAMPO = 5;
+
     private final String nombre;
     private final int lpIniciales;
     private int puntosVida;
+    private final List<Monstruo> campo = new ArrayList<>();
 
     /**
      * Crea un duelista con los LP oficiales (8000).
@@ -72,6 +81,41 @@ public class Jugador {
      */
     public boolean estaDerrotado() {
         return puntosVida == 0;
+    }
+
+    /**
+     * Pone un monstruo en el campo del duelista.
+     *
+     * @throws ReglaDeBatallaException si el campo está lleno o el monstruo ya está en él
+     */
+    public void invocar(Monstruo monstruo) throws ReglaDeBatallaException {
+        Objects.requireNonNull(monstruo, "El monstruo es obligatorio.");
+        if (campo.contains(monstruo)) {
+            throw new ReglaDeBatallaException(monstruo.getNombre() + " ya está en el campo de " + nombre + ".");
+        }
+        if (campo.size() >= MAX_MONSTRUOS_EN_CAMPO) {
+            throw new ReglaDeBatallaException(nombre + " ya tiene " + MAX_MONSTRUOS_EN_CAMPO
+                    + " monstruos en el campo, que es el máximo permitido.");
+        }
+        campo.add(monstruo);
+    }
+
+    /**
+     * @return {@code true} si el monstruo está en el campo de este duelista
+     */
+    public boolean controla(Monstruo monstruo) {
+        return campo.contains(monstruo);
+    }
+
+    public boolean tieneMonstruosEnCampo() {
+        return !campo.isEmpty();
+    }
+
+    /**
+     * @return los monstruos del campo (lista de solo lectura)
+     */
+    public List<Monstruo> getCampo() {
+        return Collections.unmodifiableList(campo);
     }
 
     public String getNombre() {

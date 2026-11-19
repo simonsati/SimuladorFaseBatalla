@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Pruebas de la gestión de Puntos de Vida (LP)
+ * y del campo
  * de cada jugador.
  *
  * @author simonsati
@@ -104,5 +105,49 @@ class JugadorTest {
 
         assertThrows(IllegalArgumentException.class, () -> jugador.recibirDanio(-100));
         assertEquals(8000, jugador.getPuntosVida());
+    }
+
+    @Test
+    @DisplayName("RF2: invocar pone el monstruo en el campo del duelista")
+    void invocarAgregaAlCampo() throws ReglaDeBatallaException {
+        Jugador jugador = new Jugador("Yugi");
+        Monstruo mago = new MonstruoNormal("Mago Oscuro", 2500, 2100);
+
+        jugador.invocar(mago);
+
+        assertTrue(jugador.controla(mago));
+        assertTrue(jugador.tieneMonstruosEnCampo());
+        assertEquals(1, jugador.getCampo().size());
+    }
+
+    @Test
+    @DisplayName("RF2: no se pueden tener más de 5 monstruos en el campo")
+    void maximoCincoMonstruos() throws ReglaDeBatallaException {
+        Jugador jugador = new Jugador("Yugi");
+        for (int i = 1; i <= Jugador.MAX_MONSTRUOS_EN_CAMPO; i++) {
+            jugador.invocar(new MonstruoNormal("Monstruo " + i, 1000, 1000));
+        }
+
+        assertThrows(ReglaDeBatallaException.class, () -> jugador.invocar(new MonstruoNormal("Sexto", 500, 500)));
+        assertEquals(Jugador.MAX_MONSTRUOS_EN_CAMPO, jugador.getCampo().size());
+    }
+
+    @Test
+    @DisplayName("RF2: el mismo monstruo no se puede invocar dos veces")
+    void noSeInvocaDosVeces() throws ReglaDeBatallaException {
+        Jugador jugador = new Jugador("Yugi");
+        Monstruo kuriboh = new MonstruoEfecto("Kuriboh", 300, 200, Posicion.DEFENSA, "");
+        jugador.invocar(kuriboh);
+
+        assertThrows(ReglaDeBatallaException.class, () -> jugador.invocar(kuriboh));
+    }
+
+    @Test
+    @DisplayName("RF2: el campo que se expone es de solo lectura")
+    void campoDeSoloLectura() {
+        Jugador jugador = new Jugador("Yugi");
+
+        assertThrows(UnsupportedOperationException.class,
+                () -> jugador.getCampo().add(new MonstruoNormal("Intruso", 100, 100)));
     }
 }

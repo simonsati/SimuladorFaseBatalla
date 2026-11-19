@@ -68,4 +68,20 @@ public class Duelo {
         jugadorEnTurno = getRival();
         turno++;
     }
+
+    /**
+     * Invoca un monstruo en el campo de uno de los duelistas.
+     *
+     * @throws ReglaDeBatallaException si el campo está lleno o el monstruo ya está en juego
+     */
+    public void invocar(Jugador duelista, Monstruo monstruo) throws ReglaDeBatallaException {
+        if (duelista != jugador1 && duelista != jugador2) {
+            throw new IllegalArgumentException("Ese duelista no participa en este duelo.");
+        }
+        Objects.requireNonNull(monstruo, "El monstruo es obligatorio.");
+        if (jugador1.controla(monstruo) || jugador2.controla(monstruo)) {
+            throw new ReglaDeBatallaException(monstruo.getNombre() + " ya está en el campo.");
+        }
+        duelista.invocar(monstruo);
+    }
 }

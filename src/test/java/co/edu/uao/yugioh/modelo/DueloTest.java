@@ -3,6 +3,7 @@ package co.edu.uao.yugioh.modelo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -56,5 +57,27 @@ class DueloTest {
         assertThrows(NullPointerException.class, () -> new Duelo(null, kaiba));
         assertThrows(IllegalArgumentException.class, () -> duelo.getRivalDe(new Jugador("Joey")));
         assertSame(yugi, duelo.getRivalDe(kaiba));
+    }
+
+    @Test
+    @DisplayName("RF2: se invoca un monstruo en el campo del duelista elegido")
+    void invocarEnElCampoDelDuelista() throws ReglaDeBatallaException {
+        Monstruo dragon = new MonstruoNormal("Dragón Blanco de Ojos Azules", 3000, 2500);
+
+        duelo.invocar(kaiba, dragon);
+
+        assertTrue(kaiba.controla(dragon));
+        assertEquals(0, yugi.getCampo().size());
+    }
+
+    @Test
+    @DisplayName("RF2: un monstruo que ya está en juego no se puede invocar otra vez")
+    void monstruoYaEnJuego() throws ReglaDeBatallaException {
+        Monstruo mago = new MonstruoNormal("Mago Oscuro", 2500, 2100);
+        duelo.invocar(yugi, mago);
+
+        assertThrows(ReglaDeBatallaException.class, () -> duelo.invocar(kaiba, mago));
+        assertThrows(IllegalArgumentException.class,
+                () -> duelo.invocar(new Jugador("Joey"), new MonstruoNormal("Bebé Dragón", 1200, 700)));
     }
 }
