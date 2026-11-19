@@ -150,4 +150,18 @@ class JugadorTest {
         assertThrows(UnsupportedOperationException.class,
                 () -> jugador.getCampo().add(new MonstruoNormal("Intruso", 100, 100)));
     }
+
+    @Test
+    @DisplayName("RF3: un monstruo destruido pasa del campo al cementerio")
+    void enviarAlCementerio() throws ReglaDeBatallaException {
+        Jugador jugador = new Jugador("Yugi");
+        Monstruo guardian = new MonstruoNormal("Guardián Celta", 1400, 1200);
+        jugador.invocar(guardian);
+
+        jugador.enviarAlCementerio(guardian);
+
+        assertFalse(jugador.controla(guardian));
+        assertEquals(1, jugador.getCementerio().size());
+        assertEquals(guardian, jugador.getCementerio().get(0));
+    }
 }

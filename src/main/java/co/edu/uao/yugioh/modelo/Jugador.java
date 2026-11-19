@@ -32,6 +32,7 @@ public class Jugador {
     private final int lpIniciales;
     private int puntosVida;
     private final List<Monstruo> campo = new ArrayList<>();
+    private final List<Monstruo> cementerio = new ArrayList<>();
 
     /**
      * Crea un duelista con los LP oficiales (8000).
@@ -116,6 +117,19 @@ public class Jugador {
      */
     public List<Monstruo> getCampo() {
         return Collections.unmodifiableList(campo);
+    }
+
+    /**
+     * @return los monstruos destruidos (lista de solo lectura)
+     */
+    public List<Monstruo> getCementerio() {
+        return Collections.unmodifiableList(cementerio);
+    }
+
+    void enviarAlCementerio(Monstruo monstruo) {
+        if (campo.remove(monstruo)) {
+            cementerio.add(monstruo);
+        }
     }
 
     public String getNombre() {
