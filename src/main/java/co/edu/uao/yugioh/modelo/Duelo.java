@@ -16,6 +16,7 @@ public class Duelo {
 
     private final Jugador jugador1;
     private final Jugador jugador2;
+    private final HistorialCombate historial;
     private final List<RegistroCombate> registros = new ArrayList<>();
     private ResultadoAtaque ultimoResultado;
     private Jugador jugadorEnTurno;
@@ -24,13 +25,16 @@ public class Duelo {
 
     /**
      * Crea el duelo. Empieza atacando el primer jugador.
+     *
+     * @param historial dónde se guarda el registro de cada ataque
      */
-    public Duelo(Jugador jugador1, Jugador jugador2) {
+    public Duelo(Jugador jugador1, Jugador jugador2, HistorialCombate historial) {
         this.jugador1 = Objects.requireNonNull(jugador1, "Falta el primer duelista.");
         this.jugador2 = Objects.requireNonNull(jugador2, "Falta el segundo duelista.");
         if (jugador1 == jugador2 || jugador1.getNombre().equalsIgnoreCase(jugador2.getNombre())) {
             throw new IllegalArgumentException("Los dos duelistas deben tener nombres diferentes.");
         }
+        this.historial = Objects.requireNonNull(historial, "El historial es obligatorio.");
         this.jugadorEnTurno = jugador1;
         this.turno = 1;
     }
@@ -127,8 +131,10 @@ public class Duelo {
      *
      * @return el registro del ataque
      * @throws ReglaDeBatallaException si el ataque no está permitido
+     * @throws PersistenciaException si el ataque se resolvió pero no se pudo guardar en el historial
      */
-    public RegistroCombate atacar(Monstruo atacante, Monstruo objetivo) throws ReglaDeBatallaException {
+    public RegistroCombate atacar(Monstruo atacante, Monstruo objetivo)
+            throws ReglaDeBatallaException, PersistenciaException {
         validarAtacante(atacante);
         Objects.requireNonNull(objetivo, "Debes elegir un objetivo.");
         Jugador rival = getRival();
@@ -143,8 +149,9 @@ public class Duelo {
      *
      * @return el registro del ataque
      * @throws ReglaDeBatallaException si el ataque no está permitido
+     * @throws PersistenciaException si el ataque se resolvió pero no se pudo guardar en el historial
      */
-    public RegistroCombate atacar(Monstruo atacante) throws ReglaDeBatallaException {
+    public RegistroCombate atacar(Monstruo atacante) throws ReglaDeBatallaException, PersistenciaException {
         validarAtacante(atacante);
         Jugador rival = getRival();
         if (rival.tieneMonstruosEnCampo()) {
@@ -193,7 +200,8 @@ public class Duelo {
      * Aplica el resultado del cálculo: reduce LP, manda al cementerio los
      * monstruos destruidos y crea el registro del ataque.
      */
-    private RegistroCombate resolver(Monstruo atacante, Monstruo objetivo, ResultadoAtaque resultado) {
+    private RegistroCombate resolver(Monstruo atacante, Monstruo objetivo, ResultadoAtaque resultado)
+            throws PersistenciaException {
         Jugador duelistaAtacante = jugadorEnTurno;
         Jugador rival = getRival();
         ultimoResultado = resultado;
@@ -229,6 +237,7 @@ public class Duelo {
                 objetivo == null ? RegistroCombate.SIN_DEFENSOR : objetivo.getNombre(),
                 resultado.getTipo(), resultado.getDanioInfligido(), afectado, texto);
         registros.add(registro);
+        historial.guardar(registro);
         return registro;
     }
 

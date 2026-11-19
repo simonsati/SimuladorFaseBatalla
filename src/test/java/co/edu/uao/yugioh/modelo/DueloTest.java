@@ -7,6 +7,9 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,13 +23,15 @@ class DueloTest {
 
     private Jugador yugi;
     private Jugador kaiba;
+    private HistorialEnMemoria historial;
     private Duelo duelo;
 
     @BeforeEach
     void prepararDuelo() {
         yugi = new Jugador("Yugi");
         kaiba = new Jugador("Kaiba");
-        duelo = new Duelo(yugi, kaiba);
+        historial = new HistorialEnMemoria();
+        duelo = new Duelo(yugi, kaiba, historial);
     }
 
     @Test
@@ -54,9 +59,10 @@ class DueloTest {
     @Test
     @DisplayName("RF1: los duelistas deben ser distintos y participar en el duelo")
     void duelistasValidos() {
-        assertThrows(IllegalArgumentException.class, () -> new Duelo(yugi, new Jugador("yugi")));
-        assertThrows(IllegalArgumentException.class, () -> new Duelo(yugi, yugi));
-        assertThrows(NullPointerException.class, () -> new Duelo(null, kaiba));
+        assertThrows(IllegalArgumentException.class, () -> new Duelo(yugi, new Jugador("yugi"), historial));
+        assertThrows(IllegalArgumentException.class, () -> new Duelo(yugi, yugi, historial));
+        assertThrows(NullPointerException.class, () -> new Duelo(null, kaiba, historial));
+        assertThrows(NullPointerException.class, () -> new Duelo(yugi, kaiba, null));
         assertThrows(IllegalArgumentException.class, () -> duelo.getRivalDe(new Jugador("Joey")));
         assertSame(yugi, duelo.getRivalDe(kaiba));
     }
@@ -210,7 +216,7 @@ class DueloTest {
     @Test
     @DisplayName("RF3: cuando los LP del rival llegan a 0 el duelo termina y hay ganador")
     void finDelDuelo() throws Exception {
-        Duelo corto = new Duelo(new Jugador("Yugi", 1000), new Jugador("Kaiba", 1000));
+        Duelo corto = new Duelo(new Jugador("Yugi", 1000), new Jugador("Kaiba", 1000), historial);
         Monstruo mago = new MonstruoNormal("Mago Oscuro", 2500, 2100);
         corto.invocar(corto.getJugador1(), mago);
 
@@ -223,5 +229,65 @@ class DueloTest {
         assertThrows(ReglaDeBatallaException.class, () -> corto.terminarTurno());
         assertThrows(ReglaDeBatallaException.class,
                 () -> corto.invocar(corto.getJugador2(), new MonstruoNormal("Tarde", 100, 100)));
+    }
+
+    @Test
+    @DisplayName("RF4: cada ataque se guarda en el historial")
+    void cadaAtaqueSeGuardaEnElHistorial() throws Exception {
+        Monstruo mago = new MonstruoNormal("Mago Oscuro", 2500, 2100);
+        Monstruo elfa = new MonstruoNormal("Elfa Mística", 800, 2000, Posicion.DEFENSA, "");
+        duelo.invocar(yugi, mago);
+        duelo.invocar(kaiba, elfa);
+
+        RegistroCombate registro = duelo.atacar(mago, elfa);
+
+        assertEquals(1, historial.cargar().size());
+        assertEquals(registro, historial.cargar().get(0));
+        assertEquals(TipoEnfrentamiento.ATAQUE_VS_DEFENSA, registro.getTipo());
+        assertEquals(RegistroCombate.NADIE, registro.getAfectado());
+    }
+
+    @Test
+    @DisplayName("RF4: si falla el guardado, el ataque ya resuelto se conserva y se informa el error")
+    void errorAlGuardarElHistorial() throws Exception {
+        Monstruo mago = new MonstruoNormal("Mago Oscuro", 2500, 2100);
+        duelo.invocar(yugi, mago);
+        historial.fallar = true;
+
+        assertThrows(PersistenciaException.class, () -> duelo.atacar(mago));
+        assertEquals(5500, kaiba.getPuntosVida());
+        assertEquals(1, duelo.getRegistros().size());
+    }
+
+    /**
+     * Historial en memoria para probar el duelo sin escribir archivos.
+     */
+    private static class HistorialEnMemoria implements HistorialCombate {
+
+        private final List<RegistroCombate> registros = new ArrayList<>();
+        private boolean fallar;
+
+        @Override
+        public void guardar(RegistroCombate registro) throws PersistenciaException {
+            if (fallar) {
+                throw new PersistenciaException("Fallo simulado", new IOException("disco lleno"));
+            }
+            registros.add(registro);
+        }
+
+        @Override
+        public List<RegistroCombate> cargar() {
+            return new ArrayList<>(registros);
+        }
+
+        @Override
+        public void limpiar() {
+            registros.clear();
+        }
+
+        @Override
+        public String getUbicacion() {
+            return "memoria";
+        }
     }
 }

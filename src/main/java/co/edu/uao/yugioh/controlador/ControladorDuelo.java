@@ -1,10 +1,12 @@
 package co.edu.uao.yugioh.controlador;
 
 import co.edu.uao.yugioh.modelo.Duelo;
+import co.edu.uao.yugioh.modelo.HistorialCombate;
 import co.edu.uao.yugioh.modelo.Jugador;
 import co.edu.uao.yugioh.modelo.Monstruo;
 import co.edu.uao.yugioh.modelo.MonstruoEfecto;
 import co.edu.uao.yugioh.modelo.MonstruoNormal;
+import co.edu.uao.yugioh.modelo.PersistenciaException;
 import co.edu.uao.yugioh.modelo.Posicion;
 import co.edu.uao.yugioh.modelo.ReglaDeBatallaException;
 import co.edu.uao.yugioh.modelo.RegistroCombate;
@@ -36,12 +38,14 @@ public class ControladorDuelo implements ActionListener {
     private static final String SIN_ATACANTES = "No hay monstruos listos para atacar";
 
     private final VentanaDuelo vista;
+    private final HistorialCombate historial;
     private Duelo duelo;
     private final List<Monstruo> atacantesDisponibles = new ArrayList<>();
     private final List<Monstruo> objetivosDisponibles = new ArrayList<>();
 
-    public ControladorDuelo(VentanaDuelo vista) {
+    public ControladorDuelo(VentanaDuelo vista, HistorialCombate historial) {
         this.vista = vista;
+        this.historial = historial;
         registrarEventos();
         configurarCampos();
     }
@@ -129,7 +133,7 @@ public class ControladorDuelo implements ActionListener {
         try {
             Jugador jugador1 = new Jugador(nombre1, lpIniciales);
             Jugador jugador2 = new Jugador(nombre2, lpIniciales);
-            duelo = new Duelo(jugador1, jugador2);
+            duelo = new Duelo(jugador1, jugador2, historial);
         } catch (IllegalArgumentException ex) {
             vista.mostrarAdvertencia("Datos inválidos", ex.getMessage());
             return false;
@@ -240,6 +244,11 @@ public class ControladorDuelo implements ActionListener {
         } catch (ReglaDeBatallaException ex) {
             vista.mostrarAdvertencia("Ataque no permitido", ex.getMessage());
             return;
+        } catch (PersistenciaException ex) {
+            List<RegistroCombate> registros = duelo.getRegistros();
+            registro = registros.get(registros.size() - 1);
+            vista.mostrarError("Historial", "El ataque se resolvió, pero no se pudo guardar en el historial.\n"
+                    + ex.getMessage());
         }
         ResultadoAtaque resultado = duelo.getUltimoResultado();
         vista.getTxtResultado().setText("Turno " + registro.getTurno() + " · " + resultado.getTipo() + "\n"

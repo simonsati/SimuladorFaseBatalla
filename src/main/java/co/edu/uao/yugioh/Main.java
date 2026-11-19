@@ -1,6 +1,8 @@
 package co.edu.uao.yugioh;
 
 import co.edu.uao.yugioh.controlador.ControladorDuelo;
+import co.edu.uao.yugioh.modelo.ArchivoHistorial;
+import co.edu.uao.yugioh.modelo.HistorialCombate;
 import co.edu.uao.yugioh.vista.VentanaDuelo;
 import java.awt.Color;
 import javax.swing.UIManager;
@@ -15,10 +17,11 @@ import javax.swing.UnsupportedLookAndFeelException;
 public class Main {
 
     public static void main(String[] args) {
+        HistorialCombate historial = new ArchivoHistorial();
         configurarApariencia();
         java.awt.EventQueue.invokeLater(() -> {
             VentanaDuelo vista = new VentanaDuelo();
-            ControladorDuelo controlador = new ControladorDuelo(vista);
+            ControladorDuelo controlador = new ControladorDuelo(vista, historial);
             controlador.iniciar();
         });
     }
