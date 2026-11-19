@@ -4,8 +4,10 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JProgressBar;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 /**
@@ -124,6 +126,74 @@ public class VentanaDuelo extends javax.swing.JFrame {
         return tblMonstruos;
     }
 
+    public JLabel getLblNombreJugador1() {
+        return lblNombreJugador1;
+    }
+
+    public JProgressBar getBarLpJugador1() {
+        return barLpJugador1;
+    }
+
+    public JLabel getLblInfoJugador1() {
+        return lblInfoJugador1;
+    }
+
+    public JTable getTblCampoJugador1() {
+        return tblCampoJugador1;
+    }
+
+    public JLabel getLblCementerioJugador1() {
+        return lblCementerioJugador1;
+    }
+
+    public JLabel getLblEnTurno() {
+        return lblEnTurno;
+    }
+
+    public JComboBox<String> getCmbAtacante() {
+        return cmbAtacante;
+    }
+
+    public JComboBox<String> getCmbObjetivo() {
+        return cmbObjetivo;
+    }
+
+    public JButton getBtnAtacar() {
+        return btnAtacar;
+    }
+
+    public JButton getBtnCambiarPosicion() {
+        return btnCambiarPosicion;
+    }
+
+    public JButton getBtnTerminarTurno() {
+        return btnTerminarTurno;
+    }
+
+    public JTextArea getTxtResultado() {
+        return txtResultado;
+    }
+
+    public JLabel getLblNombreJugador2() {
+        return lblNombreJugador2;
+    }
+
+    public JProgressBar getBarLpJugador2() {
+        return barLpJugador2;
+    }
+
+    public JLabel getLblInfoJugador2() {
+        return lblInfoJugador2;
+    }
+
+    public JTable getTblCampoJugador2() {
+        return tblCampoJugador2;
+    }
+
+    public JLabel getLblCementerioJugador2() {
+        return lblCementerioJugador2;
+    }
+
     public JLabel getLblEstado() {
         return lblEstado;
     }
@@ -183,6 +253,39 @@ public class VentanaDuelo extends javax.swing.JFrame {
         lblTituloListaMonstruos = new javax.swing.JLabel();
         scrMonstruos = new javax.swing.JScrollPane();
         tblMonstruos = new javax.swing.JTable();
+        pnlBatalla = new javax.swing.JPanel();
+        pnlArena = new javax.swing.JPanel();
+        pnlJugador1 = new javax.swing.JPanel();
+        pnlInfoJugador1 = new javax.swing.JPanel();
+        lblNombreJugador1 = new javax.swing.JLabel();
+        barLpJugador1 = new javax.swing.JProgressBar();
+        lblInfoJugador1 = new javax.swing.JLabel();
+        scrCampoJugador1 = new javax.swing.JScrollPane();
+        tblCampoJugador1 = new javax.swing.JTable();
+        lblCementerioJugador1 = new javax.swing.JLabel();
+        pnlAcciones = new javax.swing.JPanel();
+        lblTituloAcciones = new javax.swing.JLabel();
+        lblEnTurno = new javax.swing.JLabel();
+        lblAtacante = new javax.swing.JLabel();
+        cmbAtacante = new javax.swing.JComboBox<>();
+        lblObjetivo = new javax.swing.JLabel();
+        cmbObjetivo = new javax.swing.JComboBox<>();
+        btnAtacar = new javax.swing.JButton();
+        pnlBotonesTurno = new javax.swing.JPanel();
+        btnCambiarPosicion = new javax.swing.JButton();
+        btnTerminarTurno = new javax.swing.JButton();
+        lblTituloResultado = new javax.swing.JLabel();
+        scrResultado = new javax.swing.JScrollPane();
+        txtResultado = new javax.swing.JTextArea();
+        pnlJugador2 = new javax.swing.JPanel();
+        pnlInfoJugador2 = new javax.swing.JPanel();
+        lblNombreJugador2 = new javax.swing.JLabel();
+        barLpJugador2 = new javax.swing.JProgressBar();
+        lblInfoJugador2 = new javax.swing.JLabel();
+        scrCampoJugador2 = new javax.swing.JScrollPane();
+        tblCampoJugador2 = new javax.swing.JTable();
+        lblCementerioJugador2 = new javax.swing.JLabel();
+        lblReglas = new javax.swing.JLabel();
         pnlEstado = new javax.swing.JPanel();
         lblEstado = new javax.swing.JLabel();
 
@@ -687,6 +790,364 @@ public class VentanaDuelo extends javax.swing.JFrame {
 
         tabsPrincipal.addTab("2 · Monstruos", new javax.swing.ImageIcon(getClass().getResource("/co/edu/uao/yugioh/vista/iconos/carta.png")), pnlMonstruos, "RF2: crear monstruos con nombre, ATQ, DEF y posición"); // NOI18N
 
+        pnlBatalla.setBackground(new java.awt.Color(24, 28, 54));
+        pnlBatalla.setBorder(javax.swing.BorderFactory.createEmptyBorder(14, 14, 12, 14));
+        pnlBatalla.setLayout(new java.awt.BorderLayout(0, 10));
+
+        pnlArena.setOpaque(false);
+        pnlArena.setLayout(new java.awt.GridBagLayout());
+
+        pnlJugador1.setBackground(new java.awt.Color(32, 37, 70));
+        pnlJugador1.setBorder(javax.swing.BorderFactory.createCompoundBorder(new javax.swing.border.LineBorder(new java.awt.Color(84, 154, 236), 2, true), javax.swing.BorderFactory.createEmptyBorder(12, 14, 12, 14)));
+        pnlJugador1.setLayout(new java.awt.BorderLayout(0, 10));
+
+        pnlInfoJugador1.setOpaque(false);
+        pnlInfoJugador1.setLayout(new java.awt.GridLayout(3, 1, 0, 6));
+
+        lblNombreJugador1.setFont(new java.awt.Font("Segoe UI", 1, 20)); // NOI18N
+        lblNombreJugador1.setForeground(new java.awt.Color(84, 154, 236));
+        lblNombreJugador1.setText("Duelista 1");
+        pnlInfoJugador1.add(lblNombreJugador1);
+
+        barLpJugador1.setBackground(new java.awt.Color(42, 48, 88));
+        barLpJugador1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        barLpJugador1.setForeground(new java.awt.Color(84, 154, 236));
+        barLpJugador1.setMaximum(8000);
+        barLpJugador1.setString("8000 / 8000 LP");
+        barLpJugador1.setValue(8000);
+        barLpJugador1.setPreferredSize(new java.awt.Dimension(146, 28));
+        barLpJugador1.setStringPainted(true);
+        pnlInfoJugador1.add(barLpJugador1);
+
+        lblInfoJugador1.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        lblInfoJugador1.setForeground(new java.awt.Color(165, 173, 207));
+        lblInfoJugador1.setText("Campo: 0/5 · Cementerio: 0");
+        pnlInfoJugador1.add(lblInfoJugador1);
+
+        pnlJugador1.add(pnlInfoJugador1, java.awt.BorderLayout.PAGE_START);
+
+        scrCampoJugador1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(60, 68, 120)));
+
+        tblCampoJugador1.setBackground(new java.awt.Color(32, 37, 70));
+        tblCampoJugador1.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        tblCampoJugador1.setForeground(new java.awt.Color(236, 239, 244));
+        tblCampoJugador1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Monstruo", "ATQ", "DEF", "Posición", "Estado"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        if (tblCampoJugador1.getColumnModel().getColumnCount() > 0) {
+            tblCampoJugador1.getColumnModel().getColumn(0).setPreferredWidth(170);
+            tblCampoJugador1.getColumnModel().getColumn(1).setPreferredWidth(55);
+            tblCampoJugador1.getColumnModel().getColumn(2).setPreferredWidth(55);
+            tblCampoJugador1.getColumnModel().getColumn(3).setPreferredWidth(75);
+            tblCampoJugador1.getColumnModel().getColumn(4).setPreferredWidth(85);
+        }
+        tblCampoJugador1.setFillsViewportHeight(true);
+        tblCampoJugador1.setGridColor(new java.awt.Color(60, 68, 120));
+        tblCampoJugador1.setRowHeight(28);
+        tblCampoJugador1.setSelectionBackground(new java.awt.Color(90, 76, 30));
+        tblCampoJugador1.setSelectionForeground(new java.awt.Color(240, 214, 130));
+        tblCampoJugador1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        tblCampoJugador1.setShowVerticalLines(false);
+        tblCampoJugador1.getTableHeader().setReorderingAllowed(false);
+        scrCampoJugador1.setViewportView(tblCampoJugador1);
+
+        pnlJugador1.add(scrCampoJugador1, java.awt.BorderLayout.CENTER);
+
+        lblCementerioJugador1.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        lblCementerioJugador1.setForeground(new java.awt.Color(165, 173, 207));
+        lblCementerioJugador1.setText("Cementerio: vacío");
+        pnlJugador1.add(lblCementerioJugador1, java.awt.BorderLayout.PAGE_END);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        pnlArena.add(pnlJugador1, gridBagConstraints);
+
+        pnlAcciones.setBackground(new java.awt.Color(32, 37, 70));
+        pnlAcciones.setBorder(javax.swing.BorderFactory.createCompoundBorder(new javax.swing.border.LineBorder(new java.awt.Color(212, 175, 55), 2, true), javax.swing.BorderFactory.createEmptyBorder(14, 16, 14, 16)));
+        pnlAcciones.setPreferredSize(new java.awt.Dimension(300, 420));
+        pnlAcciones.setLayout(new java.awt.GridBagLayout());
+
+        lblTituloAcciones.setFont(new java.awt.Font("Segoe UI", 1, 19)); // NOI18N
+        lblTituloAcciones.setForeground(new java.awt.Color(212, 175, 55));
+        lblTituloAcciones.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblTituloAcciones.setIcon(new javax.swing.ImageIcon(getClass().getResource("/co/edu/uao/yugioh/vista/iconos/batalla.png"))); // NOI18N
+        lblTituloAcciones.setText("Declarar ataque");
+        lblTituloAcciones.setIconTextGap(10);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 4, 0);
+        pnlAcciones.add(lblTituloAcciones, gridBagConstraints);
+
+        lblEnTurno.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        lblEnTurno.setForeground(new java.awt.Color(240, 214, 130));
+        lblEnTurno.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblEnTurno.setText("Ataca: —");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 12, 0);
+        pnlAcciones.add(lblEnTurno, gridBagConstraints);
+
+        lblAtacante.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        lblAtacante.setForeground(new java.awt.Color(236, 239, 244));
+        lblAtacante.setText("Monstruo atacante");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(4, 0, 4, 0);
+        pnlAcciones.add(lblAtacante, gridBagConstraints);
+
+        cmbAtacante.setBackground(new java.awt.Color(42, 48, 88));
+        cmbAtacante.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        cmbAtacante.setForeground(new java.awt.Color(236, 239, 244));
+        cmbAtacante.setToolTipText("Solo aparecen los monstruos en Ataque que no han atacado en este turno");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.ipady = 4;
+        pnlAcciones.add(cmbAtacante, gridBagConstraints);
+
+        lblObjetivo.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        lblObjetivo.setForeground(new java.awt.Color(236, 239, 244));
+        lblObjetivo.setText("Objetivo");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(10, 0, 4, 0);
+        pnlAcciones.add(lblObjetivo, gridBagConstraints);
+
+        cmbObjetivo.setBackground(new java.awt.Color(42, 48, 88));
+        cmbObjetivo.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        cmbObjetivo.setForeground(new java.awt.Color(236, 239, 244));
+        cmbObjetivo.setToolTipText("Monstruos del rival, o ataque directo si su campo está vacío");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.ipady = 4;
+        pnlAcciones.add(cmbObjetivo, gridBagConstraints);
+
+        btnAtacar.setBackground(new java.awt.Color(190, 46, 62));
+        btnAtacar.setFont(new java.awt.Font("Segoe UI", 1, 17)); // NOI18N
+        btnAtacar.setForeground(new java.awt.Color(236, 239, 244));
+        btnAtacar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/co/edu/uao/yugioh/vista/iconos/atacar.png"))); // NOI18N
+        btnAtacar.setText("¡Atacar!");
+        btnAtacar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnAtacar.setFocusPainted(false);
+        btnAtacar.setIconTextGap(8);
+        btnAtacar.setMargin(new java.awt.Insets(8, 16, 8, 16));
+        btnAtacar.setToolTipText("Resuelve el ataque según la tabla oficial de daño");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 6;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.ipady = 6;
+        gridBagConstraints.insets = new java.awt.Insets(16, 0, 8, 0);
+        pnlAcciones.add(btnAtacar, gridBagConstraints);
+
+        pnlBotonesTurno.setOpaque(false);
+        pnlBotonesTurno.setLayout(new java.awt.GridLayout(1, 0, 8, 0));
+
+        btnCambiarPosicion.setBackground(new java.awt.Color(42, 48, 88));
+        btnCambiarPosicion.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        btnCambiarPosicion.setForeground(new java.awt.Color(236, 239, 244));
+        btnCambiarPosicion.setIcon(new javax.swing.ImageIcon(getClass().getResource("/co/edu/uao/yugioh/vista/iconos/posicion.png"))); // NOI18N
+        btnCambiarPosicion.setText("Posición");
+        btnCambiarPosicion.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnCambiarPosicion.setFocusPainted(false);
+        btnCambiarPosicion.setIconTextGap(8);
+        btnCambiarPosicion.setMargin(new java.awt.Insets(8, 16, 8, 16));
+        btnCambiarPosicion.setToolTipText("Cambia a Ataque/Defensa el monstruo seleccionado en tu tabla (una vez por turno)");
+        pnlBotonesTurno.add(btnCambiarPosicion);
+
+        btnTerminarTurno.setBackground(new java.awt.Color(42, 48, 88));
+        btnTerminarTurno.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        btnTerminarTurno.setForeground(new java.awt.Color(236, 239, 244));
+        btnTerminarTurno.setIcon(new javax.swing.ImageIcon(getClass().getResource("/co/edu/uao/yugioh/vista/iconos/turno.png"))); // NOI18N
+        btnTerminarTurno.setText("Fin de turno");
+        btnTerminarTurno.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnTerminarTurno.setFocusPainted(false);
+        btnTerminarTurno.setIconTextGap(8);
+        btnTerminarTurno.setMargin(new java.awt.Insets(8, 16, 8, 16));
+        btnTerminarTurno.setToolTipText("Pasa el turno al rival");
+        pnlBotonesTurno.add(btnTerminarTurno);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 7;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 12, 0);
+        pnlAcciones.add(pnlBotonesTurno, gridBagConstraints);
+
+        lblTituloResultado.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        lblTituloResultado.setForeground(new java.awt.Color(165, 173, 207));
+        lblTituloResultado.setText("Resultado del último ataque");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 8;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.insets = new java.awt.Insets(4, 0, 4, 0);
+        pnlAcciones.add(lblTituloResultado, gridBagConstraints);
+
+        scrResultado.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(60, 68, 120)));
+
+        txtResultado.setBackground(new java.awt.Color(42, 48, 88));
+        txtResultado.setColumns(20);
+        txtResultado.setEditable(false);
+        txtResultado.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        txtResultado.setForeground(new java.awt.Color(236, 239, 244));
+        txtResultado.setLineWrap(true);
+        txtResultado.setRows(6);
+        txtResultado.setText("Aquí verás el cálculo de cada ataque: qué monstruo se destruye y cuánto daño recibe cada duelista.");
+        txtResultado.setWrapStyleWord(true);
+        txtResultado.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 10, 8, 10));
+        scrResultado.setViewportView(txtResultado);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 9;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weighty = 1.0;
+        pnlAcciones.add(scrResultado, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(0, 12, 0, 12);
+        pnlArena.add(pnlAcciones, gridBagConstraints);
+
+        pnlJugador2.setBackground(new java.awt.Color(32, 37, 70));
+        pnlJugador2.setBorder(javax.swing.BorderFactory.createCompoundBorder(new javax.swing.border.LineBorder(new java.awt.Color(232, 86, 102), 2, true), javax.swing.BorderFactory.createEmptyBorder(12, 14, 12, 14)));
+        pnlJugador2.setLayout(new java.awt.BorderLayout(0, 10));
+
+        pnlInfoJugador2.setOpaque(false);
+        pnlInfoJugador2.setLayout(new java.awt.GridLayout(3, 1, 0, 6));
+
+        lblNombreJugador2.setFont(new java.awt.Font("Segoe UI", 1, 20)); // NOI18N
+        lblNombreJugador2.setForeground(new java.awt.Color(232, 86, 102));
+        lblNombreJugador2.setText("Duelista 2");
+        pnlInfoJugador2.add(lblNombreJugador2);
+
+        barLpJugador2.setBackground(new java.awt.Color(42, 48, 88));
+        barLpJugador2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        barLpJugador2.setForeground(new java.awt.Color(232, 86, 102));
+        barLpJugador2.setMaximum(8000);
+        barLpJugador2.setString("8000 / 8000 LP");
+        barLpJugador2.setValue(8000);
+        barLpJugador2.setPreferredSize(new java.awt.Dimension(146, 28));
+        barLpJugador2.setStringPainted(true);
+        pnlInfoJugador2.add(barLpJugador2);
+
+        lblInfoJugador2.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        lblInfoJugador2.setForeground(new java.awt.Color(165, 173, 207));
+        lblInfoJugador2.setText("Campo: 0/5 · Cementerio: 0");
+        pnlInfoJugador2.add(lblInfoJugador2);
+
+        pnlJugador2.add(pnlInfoJugador2, java.awt.BorderLayout.PAGE_START);
+
+        scrCampoJugador2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(60, 68, 120)));
+
+        tblCampoJugador2.setBackground(new java.awt.Color(32, 37, 70));
+        tblCampoJugador2.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        tblCampoJugador2.setForeground(new java.awt.Color(236, 239, 244));
+        tblCampoJugador2.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Monstruo", "ATQ", "DEF", "Posición", "Estado"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        if (tblCampoJugador2.getColumnModel().getColumnCount() > 0) {
+            tblCampoJugador2.getColumnModel().getColumn(0).setPreferredWidth(170);
+            tblCampoJugador2.getColumnModel().getColumn(1).setPreferredWidth(55);
+            tblCampoJugador2.getColumnModel().getColumn(2).setPreferredWidth(55);
+            tblCampoJugador2.getColumnModel().getColumn(3).setPreferredWidth(75);
+            tblCampoJugador2.getColumnModel().getColumn(4).setPreferredWidth(85);
+        }
+        tblCampoJugador2.setFillsViewportHeight(true);
+        tblCampoJugador2.setGridColor(new java.awt.Color(60, 68, 120));
+        tblCampoJugador2.setRowHeight(28);
+        tblCampoJugador2.setSelectionBackground(new java.awt.Color(90, 76, 30));
+        tblCampoJugador2.setSelectionForeground(new java.awt.Color(240, 214, 130));
+        tblCampoJugador2.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        tblCampoJugador2.setShowVerticalLines(false);
+        tblCampoJugador2.getTableHeader().setReorderingAllowed(false);
+        scrCampoJugador2.setViewportView(tblCampoJugador2);
+
+        pnlJugador2.add(scrCampoJugador2, java.awt.BorderLayout.CENTER);
+
+        lblCementerioJugador2.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        lblCementerioJugador2.setForeground(new java.awt.Color(165, 173, 207));
+        lblCementerioJugador2.setText("Cementerio: vacío");
+        pnlJugador2.add(lblCementerioJugador2, java.awt.BorderLayout.PAGE_END);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        pnlArena.add(pnlJugador2, gridBagConstraints);
+
+        pnlBatalla.add(pnlArena, java.awt.BorderLayout.CENTER);
+
+        lblReglas.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        lblReglas.setForeground(new java.awt.Color(165, 173, 207));
+        lblReglas.setText("<html><b>Tabla de daño:</b> Ataque vs Ataque: el monstruo con menos ATQ se destruye y su dueño recibe la diferencia (si empatan, se destruyen ambos y nadie recibe daño). &nbsp;Ataque vs Defensa: si el ATQ supera la DEF el defensor se destruye sin daño; si es menor, el atacante recibe la diferencia. &nbsp;Ataque directo: solo si el rival no tiene monstruos; recibe todo el ATQ.</html>");
+        lblReglas.setBorder(javax.swing.BorderFactory.createEmptyBorder(4, 2, 0, 2));
+        pnlBatalla.add(lblReglas, java.awt.BorderLayout.PAGE_END);
+
+        tabsPrincipal.addTab("3 · Batalla", new javax.swing.ImageIcon(getClass().getResource("/co/edu/uao/yugioh/vista/iconos/batalla.png")), pnlBatalla, "RF3: declarar ataques y calcular el daño"); // NOI18N
+
         getContentPane().add(tabsPrincipal, java.awt.BorderLayout.CENTER);
 
         pnlEstado.setBackground(new java.awt.Color(15, 18, 38));
@@ -705,45 +1166,77 @@ public class VentanaDuelo extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JProgressBar barLpJugador1;
+    private javax.swing.JProgressBar barLpJugador2;
+    private javax.swing.JButton btnAtacar;
+    private javax.swing.JButton btnCambiarPosicion;
     private javax.swing.JButton btnIniciarDuelo;
     private javax.swing.JButton btnInvocar;
     private javax.swing.JButton btnLimpiarMonstruo;
+    private javax.swing.JButton btnTerminarTurno;
+    private javax.swing.JComboBox<String> cmbAtacante;
     private javax.swing.JComboBox<String> cmbDueno;
+    private javax.swing.JComboBox<String> cmbObjetivo;
     private javax.swing.JComboBox<String> cmbPosicion;
     private javax.swing.JComboBox<String> cmbTipo;
+    private javax.swing.JLabel lblAtacante;
     private javax.swing.JLabel lblAtaque;
     private javax.swing.JLabel lblAyudaDuelistas;
     private javax.swing.JLabel lblAyudaMonstruo;
+    private javax.swing.JLabel lblCementerioJugador1;
+    private javax.swing.JLabel lblCementerioJugador2;
     private javax.swing.JLabel lblDefensa;
     private javax.swing.JLabel lblDetalle;
     private javax.swing.JLabel lblDueno;
+    private javax.swing.JLabel lblEnTurno;
     private javax.swing.JLabel lblEstado;
+    private javax.swing.JLabel lblInfoJugador1;
+    private javax.swing.JLabel lblInfoJugador2;
     private javax.swing.JLabel lblJugador1;
     private javax.swing.JLabel lblJugador2;
     private javax.swing.JLabel lblLogo;
     private javax.swing.JLabel lblLpIniciales;
+    private javax.swing.JLabel lblNombreJugador1;
+    private javax.swing.JLabel lblNombreJugador2;
     private javax.swing.JLabel lblNombreMonstruo;
     private javax.swing.JLabel lblNotaDuelistas;
+    private javax.swing.JLabel lblObjetivo;
     private javax.swing.JLabel lblPosicion;
+    private javax.swing.JLabel lblReglas;
     private javax.swing.JLabel lblSubtitulo;
     private javax.swing.JLabel lblTipo;
     private javax.swing.JLabel lblTitulo;
+    private javax.swing.JLabel lblTituloAcciones;
     private javax.swing.JLabel lblTituloDuelistas;
     private javax.swing.JLabel lblTituloListaMonstruos;
     private javax.swing.JLabel lblTituloMonstruo;
+    private javax.swing.JLabel lblTituloResultado;
     private javax.swing.JLabel lblTurno;
+    private javax.swing.JPanel pnlAcciones;
+    private javax.swing.JPanel pnlArena;
+    private javax.swing.JPanel pnlBatalla;
     private javax.swing.JPanel pnlBotonesDuelistas;
     private javax.swing.JPanel pnlBotonesMonstruo;
+    private javax.swing.JPanel pnlBotonesTurno;
     private javax.swing.JPanel pnlDuelistas;
     private javax.swing.JPanel pnlEncabezado;
     private javax.swing.JPanel pnlEstado;
     private javax.swing.JPanel pnlFormMonstruo;
+    private javax.swing.JPanel pnlInfoJugador1;
+    private javax.swing.JPanel pnlInfoJugador2;
+    private javax.swing.JPanel pnlJugador1;
+    private javax.swing.JPanel pnlJugador2;
     private javax.swing.JPanel pnlListaMonstruos;
     private javax.swing.JPanel pnlMonstruos;
     private javax.swing.JPanel pnlTarjetaDuelistas;
     private javax.swing.JPanel pnlTitulos;
+    private javax.swing.JScrollPane scrCampoJugador1;
+    private javax.swing.JScrollPane scrCampoJugador2;
     private javax.swing.JScrollPane scrMonstruos;
+    private javax.swing.JScrollPane scrResultado;
     private javax.swing.JTabbedPane tabsPrincipal;
+    private javax.swing.JTable tblCampoJugador1;
+    private javax.swing.JTable tblCampoJugador2;
     private javax.swing.JTable tblMonstruos;
     private javax.swing.JTextField txtAtaque;
     private javax.swing.JTextField txtDefensa;
@@ -752,5 +1245,6 @@ public class VentanaDuelo extends javax.swing.JFrame {
     private javax.swing.JTextField txtJugador2;
     private javax.swing.JTextField txtLpIniciales;
     private javax.swing.JTextField txtNombreMonstruo;
+    private javax.swing.JTextArea txtResultado;
     // End of variables declaration//GEN-END:variables
 }

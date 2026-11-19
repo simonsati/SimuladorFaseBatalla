@@ -7,11 +7,17 @@ import co.edu.uao.yugioh.modelo.MonstruoEfecto;
 import co.edu.uao.yugioh.modelo.MonstruoNormal;
 import co.edu.uao.yugioh.modelo.Posicion;
 import co.edu.uao.yugioh.modelo.ReglaDeBatallaException;
+import co.edu.uao.yugioh.modelo.RegistroCombate;
+import co.edu.uao.yugioh.modelo.ResultadoAtaque;
 import co.edu.uao.yugioh.vista.VentanaDuelo;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JLabel;
+import javax.swing.JProgressBar;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -25,9 +31,14 @@ import javax.swing.table.DefaultTableModel;
 public class ControladorDuelo implements ActionListener {
 
     private static final int PESTANA_MONSTRUOS = 1;
+    private static final int PESTANA_BATALLA = 2;
+    private static final String OPCION_ATAQUE_DIRECTO = "Ataque directo al rival";
+    private static final String SIN_ATACANTES = "No hay monstruos listos para atacar";
 
     private final VentanaDuelo vista;
     private Duelo duelo;
+    private final List<Monstruo> atacantesDisponibles = new ArrayList<>();
+    private final List<Monstruo> objetivosDisponibles = new ArrayList<>();
 
     public ControladorDuelo(VentanaDuelo vista) {
         this.vista = vista;
@@ -47,6 +58,9 @@ public class ControladorDuelo implements ActionListener {
         vista.getBtnIniciarDuelo().addActionListener(this);
         vista.getBtnInvocar().addActionListener(this);
         vista.getBtnLimpiarMonstruo().addActionListener(this);
+        vista.getBtnAtacar().addActionListener(this);
+        vista.getBtnCambiarPosicion().addActionListener(this);
+        vista.getBtnTerminarTurno().addActionListener(this);
     }
 
     /**
@@ -67,6 +81,12 @@ public class ControladorDuelo implements ActionListener {
             invocarMonstruo();
         } else if (fuente == vista.getBtnLimpiarMonstruo()) {
             limpiarFormularioMonstruo();
+        } else if (fuente == vista.getBtnAtacar()) {
+            atacar();
+        } else if (fuente == vista.getBtnCambiarPosicion()) {
+            cambiarPosicion();
+        } else if (fuente == vista.getBtnTerminarTurno()) {
+            terminarTurno();
         }
     }
 
@@ -115,6 +135,7 @@ public class ControladorDuelo implements ActionListener {
             return false;
         }
         prepararFormularioMonstruos();
+        vista.getTxtResultado().setText("Duelo listo. Cuando haya monstruos en el campo, elige un atacante y un objetivo.");
         actualizarVista();
         mostrarEstado("Duelo iniciado: " + nombre1 + " contra " + nombre2 + ", cada uno con " + lpIniciales
                 + " LP. Empieza " + nombre1 + ".");
@@ -190,12 +211,178 @@ public class ControladorDuelo implements ActionListener {
     }
 
     // ------------------------------------------------------------------
+    // RF3 - Lógica de combate
+    // ------------------------------------------------------------------
+
+    private void atacar() {
+        if (duelo == null) {
+            return;
+        }
+        int indiceAtacante = vista.getCmbAtacante().getSelectedIndex();
+        if (indiceAtacante < 0 || indiceAtacante >= atacantesDisponibles.size()) {
+            vista.mostrarAdvertencia("Sin atacante", duelo.getJugadorEnTurno().getNombre()
+                    + " no tiene monstruos en posición de ataque que puedan atacar en este turno.");
+            return;
+        }
+        Monstruo atacante = atacantesDisponibles.get(indiceAtacante);
+        Jugador duelistaAtacante = duelo.getJugadorEnTurno();
+        Jugador rival = duelo.getRival();
+        int lpAtacanteAntes = duelistaAtacante.getPuntosVida();
+        int lpRivalAntes = rival.getPuntosVida();
+        RegistroCombate registro;
+        try {
+            if (objetivosDisponibles.isEmpty()) {
+                registro = duelo.atacar(atacante);
+            } else {
+                int indiceObjetivo = Math.max(0, vista.getCmbObjetivo().getSelectedIndex());
+                registro = duelo.atacar(atacante, objetivosDisponibles.get(indiceObjetivo));
+            }
+        } catch (ReglaDeBatallaException ex) {
+            vista.mostrarAdvertencia("Ataque no permitido", ex.getMessage());
+            return;
+        }
+        ResultadoAtaque resultado = duelo.getUltimoResultado();
+        vista.getTxtResultado().setText("Turno " + registro.getTurno() + " · " + resultado.getTipo() + "\n"
+                + resultado.getDescripcion() + "\n\n"
+                + "LP de " + duelistaAtacante.getNombre() + ": " + lpAtacanteAntes + " → " + duelistaAtacante.getPuntosVida()
+                + "\nLP de " + rival.getNombre() + ": " + lpRivalAntes + " → " + rival.getPuntosVida());
+        vista.getTxtResultado().setCaretPosition(0);
+        actualizarVista();
+        String resumen = registro.getResultado();
+        mostrarEstado("Turno " + registro.getTurno() + ": " + resumen + (resumen.endsWith("!") ? "" : "."));
+        if (duelo.haTerminado()) {
+            Jugador ganador = duelo.getGanador();
+            vista.mostrarInformacion("¡Fin del duelo!", ganador.getNombre() + " gana el duelo con "
+                    + ganador.getPuntosVida() + " LP restantes.");
+        }
+    }
+
+    private void cambiarPosicion() {
+        if (duelo == null) {
+            return;
+        }
+        Jugador enTurno = duelo.getJugadorEnTurno();
+        JTable tabla = enTurno == duelo.getJugador1() ? vista.getTblCampoJugador1() : vista.getTblCampoJugador2();
+        int fila = tabla.getSelectedRow();
+        if (fila < 0 || fila >= enTurno.getCampo().size()) {
+            vista.mostrarAdvertencia("Cambiar posición", "Selecciona en la tabla de " + enTurno.getNombre()
+                    + " el monstruo que quieres cambiar de posición.");
+            return;
+        }
+        Monstruo monstruo = enTurno.getCampo().get(fila);
+        try {
+            duelo.cambiarPosicion(monstruo);
+            actualizarVista();
+            mostrarEstado(monstruo.getNombre() + " ahora está en posición de " + monstruo.getPosicion() + ".");
+        } catch (ReglaDeBatallaException ex) {
+            vista.mostrarAdvertencia("Cambiar posición", ex.getMessage());
+        }
+    }
+
+    private void terminarTurno() {
+        if (duelo == null) {
+            return;
+        }
+        try {
+            duelo.terminarTurno();
+            actualizarVista();
+            mostrarEstado("Turno " + duelo.getTurno() + ": ahora ataca " + duelo.getJugadorEnTurno().getNombre() + ".");
+        } catch (ReglaDeBatallaException ex) {
+            vista.mostrarAdvertencia("Fin de turno", ex.getMessage());
+        }
+    }
+
+    private void actualizarArena() {
+        actualizarJugador(duelo.getJugador1(), vista.getLblNombreJugador1(), vista.getBarLpJugador1(),
+                vista.getLblInfoJugador1(), vista.getTblCampoJugador1(), vista.getLblCementerioJugador1());
+        actualizarJugador(duelo.getJugador2(), vista.getLblNombreJugador2(), vista.getBarLpJugador2(),
+                vista.getLblInfoJugador2(), vista.getTblCampoJugador2(), vista.getLblCementerioJugador2());
+
+        Jugador enTurno = duelo.getJugadorEnTurno();
+        Jugador rival = duelo.getRival();
+        vista.getLblEnTurno().setText(duelo.haTerminado()
+                ? "Ganó " + duelo.getGanador().getNombre()
+                : "Ataca " + enTurno.getNombre() + " → " + rival.getNombre());
+
+        atacantesDisponibles.clear();
+        atacantesDisponibles.addAll(enTurno.listarMonstruosQuePuedenAtacar());
+        List<String> opcionesAtacante = new ArrayList<>();
+        for (Monstruo monstruo : atacantesDisponibles) {
+            opcionesAtacante.add(monstruo.getNombre() + " (ATQ " + monstruo.getAtaque() + ")");
+        }
+        if (opcionesAtacante.isEmpty()) {
+            opcionesAtacante.add(SIN_ATACANTES);
+        }
+        vista.getCmbAtacante().setModel(new DefaultComboBoxModel<>(opcionesAtacante.toArray(new String[0])));
+
+        objetivosDisponibles.clear();
+        objetivosDisponibles.addAll(rival.getCampo());
+        List<String> opcionesObjetivo = new ArrayList<>();
+        for (Monstruo monstruo : objetivosDisponibles) {
+            opcionesObjetivo.add(monstruo.getNombre() + (monstruo.estaEnAtaque()
+                    ? " (ATQ " + monstruo.getAtaque() + ", en ataque)"
+                    : " (DEF " + monstruo.getDefensa() + ", en defensa)"));
+        }
+        if (opcionesObjetivo.isEmpty()) {
+            opcionesObjetivo.add(OPCION_ATAQUE_DIRECTO + " (" + rival.getNombre() + ")");
+        }
+        vista.getCmbObjetivo().setModel(new DefaultComboBoxModel<>(opcionesObjetivo.toArray(new String[0])));
+
+        boolean enCurso = !duelo.haTerminado();
+        vista.getBtnAtacar().setEnabled(enCurso && !atacantesDisponibles.isEmpty());
+        vista.getBtnCambiarPosicion().setEnabled(enCurso);
+        vista.getBtnTerminarTurno().setEnabled(enCurso);
+    }
+
+    private void actualizarJugador(Jugador jugador, JLabel lblNombre, JProgressBar barLp, JLabel lblInfo,
+            JTable tabla, JLabel lblCementerio) {
+        boolean enTurno = jugador == duelo.getJugadorEnTurno() && !duelo.haTerminado();
+        lblNombre.setText(jugador.getNombre() + (enTurno ? "  ·  en turno" : ""));
+        barLp.setMaximum(jugador.getLpIniciales());
+        barLp.setValue(jugador.getPuntosVida());
+        barLp.setString(jugador.getPuntosVida() + " / " + jugador.getLpIniciales() + " LP");
+        lblInfo.setText("Campo: " + jugador.getCampo().size() + "/" + Jugador.MAX_MONSTRUOS_EN_CAMPO
+                + " · Cementerio: " + jugador.getCementerio().size());
+
+        DefaultTableModel modelo = (DefaultTableModel) tabla.getModel();
+        modelo.setRowCount(0);
+        for (Monstruo monstruo : jugador.getCampo()) {
+            modelo.addRow(new Object[]{monstruo.getNombre(), monstruo.getAtaque(), monstruo.getDefensa(),
+                monstruo.getPosicion().getEtiqueta(), estadoDe(monstruo, enTurno)});
+        }
+
+        if (jugador.getCementerio().isEmpty()) {
+            lblCementerio.setText("Cementerio: vacío");
+        } else {
+            StringBuilder nombres = new StringBuilder();
+            for (Monstruo monstruo : jugador.getCementerio()) {
+                if (nombres.length() > 0) {
+                    nombres.append(", ");
+                }
+                nombres.append(monstruo.getNombre());
+            }
+            lblCementerio.setText("<html>Cementerio: " + nombres + "</html>");
+        }
+    }
+
+    private static String estadoDe(Monstruo monstruo, boolean duenoEnTurno) {
+        if (monstruo.isAtacoEsteTurno()) {
+            return "Ya atacó";
+        }
+        if (!monstruo.estaEnAtaque()) {
+            return "En defensa";
+        }
+        return duenoEnTurno ? "Listo" : "En guardia";
+    }
+
+    // ------------------------------------------------------------------
     // Estado general de la ventana
     // ------------------------------------------------------------------
 
     private void actualizarVista() {
         boolean hayDuelo = duelo != null;
         vista.getTabsPrincipal().setEnabledAt(PESTANA_MONSTRUOS, hayDuelo);
+        vista.getTabsPrincipal().setEnabledAt(PESTANA_BATALLA, hayDuelo);
         if (!hayDuelo) {
             vista.getLblTurno().setText("Duelo sin iniciar");
             return;
@@ -206,6 +393,7 @@ public class ControladorDuelo implements ActionListener {
             vista.getLblTurno().setText("Turno " + duelo.getTurno() + " · Ataca " + duelo.getJugadorEnTurno().getNombre());
         }
         actualizarTablaMonstruos();
+        actualizarArena();
     }
 
     private void mostrarEstado(String mensaje) {
