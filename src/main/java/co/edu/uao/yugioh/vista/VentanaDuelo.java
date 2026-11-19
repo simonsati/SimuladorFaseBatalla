@@ -82,6 +82,10 @@ public class VentanaDuelo extends javax.swing.JFrame {
         return txtLpIniciales;
     }
 
+    public JButton getBtnDueloEjemplo() {
+        return btnDueloEjemplo;
+    }
+
     public JButton getBtnIniciarDuelo() {
         return btnIniciarDuelo;
     }
@@ -250,6 +254,7 @@ public class VentanaDuelo extends javax.swing.JFrame {
         lblLpIniciales = new javax.swing.JLabel();
         txtLpIniciales = new javax.swing.JTextField();
         pnlBotonesDuelistas = new javax.swing.JPanel();
+        btnDueloEjemplo = new javax.swing.JButton();
         btnIniciarDuelo = new javax.swing.JButton();
         lblNotaDuelistas = new javax.swing.JLabel();
         pnlMonstruos = new javax.swing.JPanel();
@@ -480,6 +485,18 @@ public class VentanaDuelo extends javax.swing.JFrame {
 
         pnlBotonesDuelistas.setOpaque(false);
         pnlBotonesDuelistas.setLayout(new java.awt.GridLayout(1, 0, 12, 0));
+
+        btnDueloEjemplo.setBackground(new java.awt.Color(42, 48, 88));
+        btnDueloEjemplo.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnDueloEjemplo.setForeground(new java.awt.Color(236, 239, 244));
+        btnDueloEjemplo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/co/edu/uao/yugioh/vista/iconos/ejemplo.png"))); // NOI18N
+        btnDueloEjemplo.setText("Duelo de ejemplo");
+        btnDueloEjemplo.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnDueloEjemplo.setFocusPainted(false);
+        btnDueloEjemplo.setIconTextGap(8);
+        btnDueloEjemplo.setMargin(new java.awt.Insets(8, 16, 8, 16));
+        btnDueloEjemplo.setToolTipText("Carga a Yugi y Kaiba con monstruos clásicos para probar rápido");
+        pnlBotonesDuelistas.add(btnDueloEjemplo);
 
         btnIniciarDuelo.setBackground(new java.awt.Color(212, 175, 55));
         btnIniciarDuelo.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -1314,6 +1331,7 @@ public class VentanaDuelo extends javax.swing.JFrame {
     private javax.swing.JProgressBar barLpJugador2;
     private javax.swing.JButton btnAtacar;
     private javax.swing.JButton btnCambiarPosicion;
+    private javax.swing.JButton btnDueloEjemplo;
     private javax.swing.JButton btnIniciarDuelo;
     private javax.swing.JButton btnInvocar;
     private javax.swing.JButton btnLimpiarMonstruo;

@@ -1,5 +1,6 @@
 package co.edu.uao.yugioh.controlador;
 
+import co.edu.uao.yugioh.modelo.CatalogoMonstruos;
 import co.edu.uao.yugioh.modelo.Duelo;
 import co.edu.uao.yugioh.modelo.HistorialCombate;
 import co.edu.uao.yugioh.modelo.Jugador;
@@ -62,6 +63,7 @@ public class ControladorDuelo implements ActionListener {
 
     private void registrarEventos() {
         vista.getBtnIniciarDuelo().addActionListener(this);
+        vista.getBtnDueloEjemplo().addActionListener(this);
         vista.getBtnInvocar().addActionListener(this);
         vista.getBtnLimpiarMonstruo().addActionListener(this);
         vista.getBtnAtacar().addActionListener(this);
@@ -85,6 +87,8 @@ public class ControladorDuelo implements ActionListener {
         Object fuente = evento.getSource();
         if (fuente == vista.getBtnIniciarDuelo()) {
             iniciarDuelo();
+        } else if (fuente == vista.getBtnDueloEjemplo()) {
+            cargarDueloDeEjemplo();
         } else if (fuente == vista.getBtnInvocar()) {
             invocarMonstruo();
         } else if (fuente == vista.getBtnLimpiarMonstruo()) {
@@ -152,6 +156,28 @@ public class ControladorDuelo implements ActionListener {
         mostrarEstado("Duelo iniciado: " + nombre1 + " contra " + nombre2 + ", cada uno con " + lpIniciales
                 + " LP. Empieza " + nombre1 + ".");
         return true;
+    }
+
+    private void cargarDueloDeEjemplo() {
+        vista.getTxtJugador1().setText("Yugi");
+        vista.getTxtJugador2().setText("Kaiba");
+        vista.getTxtLpIniciales().setText(String.valueOf(Jugador.LP_OFICIALES));
+        if (!crearDuelo("Yugi", "Kaiba", String.valueOf(Jugador.LP_OFICIALES))) {
+            return;
+        }
+        try {
+            for (Monstruo monstruo : CatalogoMonstruos.crearMazoDeYugi()) {
+                duelo.invocar(duelo.getJugador1(), monstruo);
+            }
+            for (Monstruo monstruo : CatalogoMonstruos.crearMazoDeKaiba()) {
+                duelo.invocar(duelo.getJugador2(), monstruo);
+            }
+        } catch (ReglaDeBatallaException ex) {
+            vista.mostrarError("Duelo de ejemplo", ex.getMessage());
+        }
+        actualizarVista();
+        vista.getTabsPrincipal().setSelectedIndex(PESTANA_BATALLA);
+        mostrarEstado("Duelo de ejemplo cargado: Yugi y Kaiba ya tienen monstruos en el campo. Empieza Yugi.");
     }
 
     // ------------------------------------------------------------------

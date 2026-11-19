@@ -397,6 +397,32 @@
                     <Property name="rows" type="int" value="1"/>
                   </Layout>
                   <SubComponents>
+                    <Component class="javax.swing.JButton" name="btnDueloEjemplo">
+                      <Properties>
+                        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                          <Color blue="58" green="30" red="2a" type="rgb"/>
+                        </Property>
+                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                          <Font name="Segoe UI" size="14" style="1"/>
+                        </Property>
+                        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                          <Color blue="f4" green="ef" red="ec" type="rgb"/>
+                        </Property>
+                        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                          <Image iconType="3" name="/co/edu/uao/yugioh/vista/iconos/ejemplo.png"/>
+                        </Property>
+                        <Property name="text" type="java.lang.String" value="Duelo de ejemplo"/>
+                        <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
+                          <Color id="Hand Cursor"/>
+                        </Property>
+                        <Property name="focusPainted" type="boolean" value="false"/>
+                        <Property name="iconTextGap" type="int" value="8"/>
+                        <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+                          <Insets value="[8, 16, 8, 16]"/>
+                        </Property>
+                        <Property name="toolTipText" type="java.lang.String" value="Carga a Yugi y Kaiba con monstruos clásicos para probar rápido"/>
+                      </Properties>
+                    </Component>
                     <Component class="javax.swing.JButton" name="btnIniciarDuelo">
                       <Properties>
                         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
