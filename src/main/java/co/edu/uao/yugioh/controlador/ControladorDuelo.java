@@ -55,6 +55,8 @@ public class ControladorDuelo implements ActionListener {
      */
     public void iniciar() {
         actualizarVista();
+        vista.getLblArchivo().setText("Historial: " + historial.getUbicacion());
+        cargarHistorial(false);
         vista.setVisible(true);
     }
 
@@ -65,6 +67,8 @@ public class ControladorDuelo implements ActionListener {
         vista.getBtnAtacar().addActionListener(this);
         vista.getBtnCambiarPosicion().addActionListener(this);
         vista.getBtnTerminarTurno().addActionListener(this);
+        vista.getBtnRecargarHistorial().addActionListener(this);
+        vista.getBtnVaciarHistorial().addActionListener(this);
     }
 
     /**
@@ -91,6 +95,10 @@ public class ControladorDuelo implements ActionListener {
             cambiarPosicion();
         } else if (fuente == vista.getBtnTerminarTurno()) {
             terminarTurno();
+        } else if (fuente == vista.getBtnRecargarHistorial()) {
+            cargarHistorial(true);
+        } else if (fuente == vista.getBtnVaciarHistorial()) {
+            vaciarHistorial();
         }
     }
 
@@ -256,6 +264,7 @@ public class ControladorDuelo implements ActionListener {
                 + "LP de " + duelistaAtacante.getNombre() + ": " + lpAtacanteAntes + " → " + duelistaAtacante.getPuntosVida()
                 + "\nLP de " + rival.getNombre() + ": " + lpRivalAntes + " → " + rival.getPuntosVida());
         vista.getTxtResultado().setCaretPosition(0);
+        agregarAlHistorial(registro);
         actualizarVista();
         String resumen = registro.getResultado();
         mostrarEstado("Turno " + registro.getTurno() + ": " + resumen + (resumen.endsWith("!") ? "" : "."));
@@ -382,6 +391,62 @@ public class ControladorDuelo implements ActionListener {
             return "En defensa";
         }
         return duenoEnTurno ? "Listo" : "En guardia";
+    }
+
+    // ------------------------------------------------------------------
+    // RF4 - Persistencia (historial)
+    // ------------------------------------------------------------------
+
+    private void cargarHistorial(boolean avisar) {
+        try {
+            List<RegistroCombate> registros = historial.cargar();
+            DefaultTableModel modelo = (DefaultTableModel) vista.getTblHistorial().getModel();
+            modelo.setRowCount(0);
+            for (RegistroCombate registro : registros) {
+                agregarFila(modelo, registro);
+            }
+            actualizarResumenHistorial();
+            if (avisar) {
+                mostrarEstado("Se leyeron " + registros.size() + " registros de " + historial.getUbicacion() + ".");
+            }
+        } catch (PersistenciaException ex) {
+            vista.mostrarError("Historial", ex.getMessage());
+        }
+    }
+
+    private void vaciarHistorial() {
+        if (!vista.confirmar("Vaciar historial", "¿Seguro que quieres borrar todos los registros del archivo?")) {
+            return;
+        }
+        try {
+            historial.limpiar();
+            cargarHistorial(false);
+            mostrarEstado("El historial quedó vacío.");
+        } catch (PersistenciaException ex) {
+            vista.mostrarError("Historial", ex.getMessage());
+        }
+    }
+
+    private void agregarAlHistorial(RegistroCombate registro) {
+        agregarFila((DefaultTableModel) vista.getTblHistorial().getModel(), registro);
+        actualizarResumenHistorial();
+    }
+
+    private static void agregarFila(DefaultTableModel modelo, RegistroCombate registro) {
+        modelo.addRow(new Object[]{registro.getFechaHoraTexto(), registro.getTurno(), registro.getDuelistaAtacante(),
+            registro.getAtacante(), registro.getDuelistaDefensor(), registro.getDefensor(),
+            registro.getTipo().getEtiqueta(), registro.getDanio(), registro.getAfectado(), registro.getResultado()});
+    }
+
+    private void actualizarResumenHistorial() {
+        DefaultTableModel modelo = (DefaultTableModel) vista.getTblHistorial().getModel();
+        int danioTotal = 0;
+        for (int fila = 0; fila < modelo.getRowCount(); fila++) {
+            danioTotal += (Integer) modelo.getValueAt(fila, 7);
+        }
+        vista.getLblResumenHistorial().setText(modelo.getRowCount() == 0
+                ? "Sin registros."
+                : modelo.getRowCount() + " ataques registrados · " + danioTotal + " puntos de daño infligidos en total.");
     }
 
     // ------------------------------------------------------------------

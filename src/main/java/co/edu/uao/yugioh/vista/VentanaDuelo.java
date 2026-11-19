@@ -194,8 +194,32 @@ public class VentanaDuelo extends javax.swing.JFrame {
         return lblCementerioJugador2;
     }
 
+    public JLabel getLblTituloHistorial() {
+        return lblTituloHistorial;
+    }
+
+    public JButton getBtnRecargarHistorial() {
+        return btnRecargarHistorial;
+    }
+
+    public JButton getBtnVaciarHistorial() {
+        return btnVaciarHistorial;
+    }
+
+    public JTable getTblHistorial() {
+        return tblHistorial;
+    }
+
+    public JLabel getLblResumenHistorial() {
+        return lblResumenHistorial;
+    }
+
     public JLabel getLblEstado() {
         return lblEstado;
+    }
+
+    public JLabel getLblArchivo() {
+        return lblArchivo;
     }
 
     /**
@@ -286,8 +310,18 @@ public class VentanaDuelo extends javax.swing.JFrame {
         tblCampoJugador2 = new javax.swing.JTable();
         lblCementerioJugador2 = new javax.swing.JLabel();
         lblReglas = new javax.swing.JLabel();
+        pnlHistorial = new javax.swing.JPanel();
+        pnlBarraHistorial = new javax.swing.JPanel();
+        lblTituloHistorial = new javax.swing.JLabel();
+        pnlBotonesHistorial = new javax.swing.JPanel();
+        btnRecargarHistorial = new javax.swing.JButton();
+        btnVaciarHistorial = new javax.swing.JButton();
+        scrHistorial = new javax.swing.JScrollPane();
+        tblHistorial = new javax.swing.JTable();
+        lblResumenHistorial = new javax.swing.JLabel();
         pnlEstado = new javax.swing.JPanel();
         lblEstado = new javax.swing.JLabel();
+        lblArchivo = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Yu-Gi-Oh! · Simulador de la Fase de Batalla");
@@ -1148,6 +1182,110 @@ public class VentanaDuelo extends javax.swing.JFrame {
 
         tabsPrincipal.addTab("3 · Batalla", new javax.swing.ImageIcon(getClass().getResource("/co/edu/uao/yugioh/vista/iconos/batalla.png")), pnlBatalla, "RF3: declarar ataques y calcular el daño"); // NOI18N
 
+        pnlHistorial.setBackground(new java.awt.Color(24, 28, 54));
+        pnlHistorial.setBorder(javax.swing.BorderFactory.createEmptyBorder(14, 14, 12, 14));
+        pnlHistorial.setLayout(new java.awt.BorderLayout(0, 10));
+
+        pnlBarraHistorial.setOpaque(false);
+        pnlBarraHistorial.setLayout(new java.awt.BorderLayout(12, 0));
+
+        lblTituloHistorial.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        lblTituloHistorial.setForeground(new java.awt.Color(212, 175, 55));
+        lblTituloHistorial.setIcon(new javax.swing.ImageIcon(getClass().getResource("/co/edu/uao/yugioh/vista/iconos/historial.png"))); // NOI18N
+        lblTituloHistorial.setText("Historial de combate · historial_combate.txt");
+        lblTituloHistorial.setIconTextGap(10);
+        pnlBarraHistorial.add(lblTituloHistorial, java.awt.BorderLayout.CENTER);
+
+        pnlBotonesHistorial.setOpaque(false);
+        pnlBotonesHistorial.setLayout(new java.awt.GridLayout(1, 0, 10, 0));
+
+        btnRecargarHistorial.setBackground(new java.awt.Color(42, 48, 88));
+        btnRecargarHistorial.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        btnRecargarHistorial.setForeground(new java.awt.Color(236, 239, 244));
+        btnRecargarHistorial.setIcon(new javax.swing.ImageIcon(getClass().getResource("/co/edu/uao/yugioh/vista/iconos/recargar.png"))); // NOI18N
+        btnRecargarHistorial.setText("Recargar archivo");
+        btnRecargarHistorial.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnRecargarHistorial.setFocusPainted(false);
+        btnRecargarHistorial.setIconTextGap(8);
+        btnRecargarHistorial.setMargin(new java.awt.Insets(8, 16, 8, 16));
+        btnRecargarHistorial.setToolTipText("Vuelve a leer historial_combate.txt");
+        pnlBotonesHistorial.add(btnRecargarHistorial);
+
+        btnVaciarHistorial.setBackground(new java.awt.Color(42, 48, 88));
+        btnVaciarHistorial.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        btnVaciarHistorial.setForeground(new java.awt.Color(236, 239, 244));
+        btnVaciarHistorial.setIcon(new javax.swing.ImageIcon(getClass().getResource("/co/edu/uao/yugioh/vista/iconos/vaciar.png"))); // NOI18N
+        btnVaciarHistorial.setText("Vaciar historial");
+        btnVaciarHistorial.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnVaciarHistorial.setFocusPainted(false);
+        btnVaciarHistorial.setIconTextGap(8);
+        btnVaciarHistorial.setMargin(new java.awt.Insets(8, 16, 8, 16));
+        btnVaciarHistorial.setToolTipText("Borra todos los registros del archivo");
+        pnlBotonesHistorial.add(btnVaciarHistorial);
+
+        pnlBarraHistorial.add(pnlBotonesHistorial, java.awt.BorderLayout.LINE_END);
+
+        pnlHistorial.add(pnlBarraHistorial, java.awt.BorderLayout.PAGE_START);
+
+        scrHistorial.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(60, 68, 120)));
+
+        tblHistorial.setBackground(new java.awt.Color(32, 37, 70));
+        tblHistorial.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        tblHistorial.setForeground(new java.awt.Color(236, 239, 244));
+        tblHistorial.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Fecha y hora", "Turno", "Duelista", "Atacante", "Rival", "Defensor", "Enfrentamiento", "Daño", "Afectado", "Resultado"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        if (tblHistorial.getColumnModel().getColumnCount() > 0) {
+            tblHistorial.getColumnModel().getColumn(0).setPreferredWidth(140);
+            tblHistorial.getColumnModel().getColumn(1).setPreferredWidth(48);
+            tblHistorial.getColumnModel().getColumn(2).setPreferredWidth(70);
+            tblHistorial.getColumnModel().getColumn(3).setPreferredWidth(175);
+            tblHistorial.getColumnModel().getColumn(4).setPreferredWidth(70);
+            tblHistorial.getColumnModel().getColumn(5).setPreferredWidth(175);
+            tblHistorial.getColumnModel().getColumn(6).setPreferredWidth(125);
+            tblHistorial.getColumnModel().getColumn(7).setPreferredWidth(55);
+            tblHistorial.getColumnModel().getColumn(8).setPreferredWidth(70);
+            tblHistorial.getColumnModel().getColumn(9).setPreferredWidth(300);
+        }
+        tblHistorial.setFillsViewportHeight(true);
+        tblHistorial.setGridColor(new java.awt.Color(60, 68, 120));
+        tblHistorial.setRowHeight(28);
+        tblHistorial.setSelectionBackground(new java.awt.Color(90, 76, 30));
+        tblHistorial.setSelectionForeground(new java.awt.Color(240, 214, 130));
+        tblHistorial.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        tblHistorial.setShowVerticalLines(false);
+        tblHistorial.getTableHeader().setReorderingAllowed(false);
+        scrHistorial.setViewportView(tblHistorial);
+
+        pnlHistorial.add(scrHistorial, java.awt.BorderLayout.CENTER);
+
+        lblResumenHistorial.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        lblResumenHistorial.setForeground(new java.awt.Color(165, 173, 207));
+        lblResumenHistorial.setText("Sin registros.");
+        pnlHistorial.add(lblResumenHistorial, java.awt.BorderLayout.PAGE_END);
+
+        tabsPrincipal.addTab("4 · Historial", new javax.swing.ImageIcon(getClass().getResource("/co/edu/uao/yugioh/vista/iconos/historial.png")), pnlHistorial, "RF4: registro de cada ataque en el archivo de texto"); // NOI18N
+
         getContentPane().add(tabsPrincipal, java.awt.BorderLayout.CENTER);
 
         pnlEstado.setBackground(new java.awt.Color(15, 18, 38));
@@ -1158,6 +1296,12 @@ public class VentanaDuelo extends javax.swing.JFrame {
         lblEstado.setForeground(new java.awt.Color(165, 173, 207));
         lblEstado.setText("Listo. Registra a los duelistas para comenzar.");
         pnlEstado.add(lblEstado, java.awt.BorderLayout.CENTER);
+
+        lblArchivo.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        lblArchivo.setForeground(new java.awt.Color(165, 173, 207));
+        lblArchivo.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        lblArchivo.setText("Historial: historial_combate.txt");
+        pnlEstado.add(lblArchivo, java.awt.BorderLayout.LINE_END);
 
         getContentPane().add(pnlEstado, java.awt.BorderLayout.PAGE_END);
 
@@ -1173,12 +1317,15 @@ public class VentanaDuelo extends javax.swing.JFrame {
     private javax.swing.JButton btnIniciarDuelo;
     private javax.swing.JButton btnInvocar;
     private javax.swing.JButton btnLimpiarMonstruo;
+    private javax.swing.JButton btnRecargarHistorial;
     private javax.swing.JButton btnTerminarTurno;
+    private javax.swing.JButton btnVaciarHistorial;
     private javax.swing.JComboBox<String> cmbAtacante;
     private javax.swing.JComboBox<String> cmbDueno;
     private javax.swing.JComboBox<String> cmbObjetivo;
     private javax.swing.JComboBox<String> cmbPosicion;
     private javax.swing.JComboBox<String> cmbTipo;
+    private javax.swing.JLabel lblArchivo;
     private javax.swing.JLabel lblAtacante;
     private javax.swing.JLabel lblAtaque;
     private javax.swing.JLabel lblAyudaDuelistas;
@@ -1203,25 +1350,30 @@ public class VentanaDuelo extends javax.swing.JFrame {
     private javax.swing.JLabel lblObjetivo;
     private javax.swing.JLabel lblPosicion;
     private javax.swing.JLabel lblReglas;
+    private javax.swing.JLabel lblResumenHistorial;
     private javax.swing.JLabel lblSubtitulo;
     private javax.swing.JLabel lblTipo;
     private javax.swing.JLabel lblTitulo;
     private javax.swing.JLabel lblTituloAcciones;
     private javax.swing.JLabel lblTituloDuelistas;
+    private javax.swing.JLabel lblTituloHistorial;
     private javax.swing.JLabel lblTituloListaMonstruos;
     private javax.swing.JLabel lblTituloMonstruo;
     private javax.swing.JLabel lblTituloResultado;
     private javax.swing.JLabel lblTurno;
     private javax.swing.JPanel pnlAcciones;
     private javax.swing.JPanel pnlArena;
+    private javax.swing.JPanel pnlBarraHistorial;
     private javax.swing.JPanel pnlBatalla;
     private javax.swing.JPanel pnlBotonesDuelistas;
+    private javax.swing.JPanel pnlBotonesHistorial;
     private javax.swing.JPanel pnlBotonesMonstruo;
     private javax.swing.JPanel pnlBotonesTurno;
     private javax.swing.JPanel pnlDuelistas;
     private javax.swing.JPanel pnlEncabezado;
     private javax.swing.JPanel pnlEstado;
     private javax.swing.JPanel pnlFormMonstruo;
+    private javax.swing.JPanel pnlHistorial;
     private javax.swing.JPanel pnlInfoJugador1;
     private javax.swing.JPanel pnlInfoJugador2;
     private javax.swing.JPanel pnlJugador1;
@@ -1232,11 +1384,13 @@ public class VentanaDuelo extends javax.swing.JFrame {
     private javax.swing.JPanel pnlTitulos;
     private javax.swing.JScrollPane scrCampoJugador1;
     private javax.swing.JScrollPane scrCampoJugador2;
+    private javax.swing.JScrollPane scrHistorial;
     private javax.swing.JScrollPane scrMonstruos;
     private javax.swing.JScrollPane scrResultado;
     private javax.swing.JTabbedPane tabsPrincipal;
     private javax.swing.JTable tblCampoJugador1;
     private javax.swing.JTable tblCampoJugador2;
+    private javax.swing.JTable tblHistorial;
     private javax.swing.JTable tblMonstruos;
     private javax.swing.JTextField txtAtaque;
     private javax.swing.JTextField txtDefensa;
