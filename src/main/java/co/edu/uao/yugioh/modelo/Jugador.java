@@ -132,6 +132,25 @@ public class Jugador {
         }
     }
 
+    /**
+     * @return los monstruos que todavía pueden declarar un ataque en este turno
+     */
+    public List<Monstruo> listarMonstruosQuePuedenAtacar() {
+        List<Monstruo> disponibles = new ArrayList<>();
+        for (Monstruo monstruo : campo) {
+            if (monstruo.puedeAtacar()) {
+                disponibles.add(monstruo);
+            }
+        }
+        return disponibles;
+    }
+
+    void prepararNuevoTurno() {
+        for (Monstruo monstruo : campo) {
+            monstruo.prepararNuevoTurno();
+        }
+    }
+
     public String getNombre() {
         return nombre;
     }

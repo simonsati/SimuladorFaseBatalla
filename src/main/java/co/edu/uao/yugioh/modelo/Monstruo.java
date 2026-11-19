@@ -19,6 +19,8 @@ public abstract class Monstruo extends Carta {
     private int ataque;
     private int defensa;
     private Posicion posicion;
+    private boolean atacoEsteTurno;
+    private boolean cambioPosicionEsteTurno;
 
     protected Monstruo(String nombre, int ataque, int defensa, Posicion posicion) {
         super(nombre);
@@ -51,8 +53,30 @@ public abstract class Monstruo extends Carta {
         this.posicion = Objects.requireNonNull(posicion, "La posición del monstruo es obligatoria.");
     }
 
+    public boolean isAtacoEsteTurno() {
+        return atacoEsteTurno;
+    }
+
+    public boolean isCambioPosicionEsteTurno() {
+        return cambioPosicionEsteTurno;
+    }
+
     public boolean estaEnAtaque() {
         return posicion == Posicion.ATAQUE;
+    }
+
+    /**
+     * @return {@code true} si está en posición de ataque y todavía no atacó en este turno
+     */
+    public boolean puedeAtacar() {
+        return estaEnAtaque() && !atacoEsteTurno;
+    }
+
+    /**
+     * @return {@code true} si no ha atacado ni cambiado de posición en este turno
+     */
+    public boolean puedeCambiarPosicion() {
+        return !atacoEsteTurno && !cambioPosicionEsteTurno;
     }
 
     /**
@@ -60,6 +84,20 @@ public abstract class Monstruo extends Carta {
      */
     public int getPuntosDePosicion() {
         return estaEnAtaque() ? ataque : defensa;
+    }
+
+    void registrarAtaque() {
+        atacoEsteTurno = true;
+    }
+
+    void cambiarPosicion() {
+        posicion = posicion.opuesta();
+        cambioPosicionEsteTurno = true;
+    }
+
+    void prepararNuevoTurno() {
+        atacoEsteTurno = false;
+        cambioPosicionEsteTurno = false;
     }
 
     /**

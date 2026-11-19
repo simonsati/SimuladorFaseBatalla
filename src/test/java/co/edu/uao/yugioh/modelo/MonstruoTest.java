@@ -106,4 +106,27 @@ class MonstruoTest {
         soldado.setPosicion(Posicion.ATAQUE);
         assertEquals(1300, soldado.getPuntosDePosicion());
     }
+
+    @Test
+    @DisplayName("RF3: un monstruo cambia de posición una vez por turno y no después de atacar")
+    void reglasDeTurnoDelMonstruo() {
+        Monstruo mago = new MonstruoNormal("Mago Oscuro", 2500, 2100);
+        assertTrue(mago.puedeAtacar());
+        assertTrue(mago.puedeCambiarPosicion());
+
+        mago.cambiarPosicion();
+        assertEquals(Posicion.DEFENSA, mago.getPosicion());
+        assertTrue(mago.isCambioPosicionEsteTurno());
+        assertFalse(mago.puedeCambiarPosicion());
+        assertFalse(mago.puedeAtacar());
+
+        mago.prepararNuevoTurno();
+        mago.cambiarPosicion();
+        mago.registrarAtaque();
+        assertTrue(mago.isAtacoEsteTurno());
+        assertFalse(mago.puedeAtacar());
+
+        mago.prepararNuevoTurno();
+        assertTrue(mago.puedeAtacar());
+    }
 }

@@ -200,7 +200,11 @@ public class ControladorDuelo implements ActionListener {
             vista.getLblTurno().setText("Duelo sin iniciar");
             return;
         }
-        vista.getLblTurno().setText("Turno " + duelo.getTurno() + " · Ataca " + duelo.getJugadorEnTurno().getNombre());
+        if (duelo.haTerminado()) {
+            vista.getLblTurno().setText("Duelo terminado · Ganó " + duelo.getGanador().getNombre());
+        } else {
+            vista.getLblTurno().setText("Turno " + duelo.getTurno() + " · Ataca " + duelo.getJugadorEnTurno().getNombre());
+        }
         actualizarTablaMonstruos();
     }
 

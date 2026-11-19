@@ -20,6 +20,7 @@ public class Duelo {
     private ResultadoAtaque ultimoResultado;
     private Jugador jugadorEnTurno;
     private int turno;
+    private Jugador ganador;
 
     /**
      * Crea el duelo. Empieza atacando el primer jugador.
@@ -67,6 +68,17 @@ public class Duelo {
         return turno;
     }
 
+    public boolean haTerminado() {
+        return ganador != null;
+    }
+
+    /**
+     * @return el ganador, o {@code null} si el duelo sigue en curso
+     */
+    public Jugador getGanador() {
+        return ganador;
+    }
+
     /**
      * @return los ataques de este duelo (lista de solo lectura)
      */
@@ -84,10 +96,13 @@ public class Duelo {
 
     /**
      * Pasa el turno al rival.
+     * Los monstruos del nuevo jugador en turno vuelven a poder atacar.
      */
-    public void terminarTurno() {
+    public void terminarTurno() throws ReglaDeBatallaException {
+        validarDueloEnCurso();
         jugadorEnTurno = getRival();
         turno++;
+        jugadorEnTurno.prepararNuevoTurno();
     }
 
     /**
@@ -96,6 +111,7 @@ public class Duelo {
      * @throws ReglaDeBatallaException si el campo está lleno o el monstruo ya está en juego
      */
     public void invocar(Jugador duelista, Monstruo monstruo) throws ReglaDeBatallaException {
+        validarDueloEnCurso();
         if (duelista != jugador1 && duelista != jugador2) {
             throw new IllegalArgumentException("Ese duelista no participa en este duelo.");
         }
@@ -138,7 +154,28 @@ public class Duelo {
         return resolver(atacante, null, CalculadoraDanio.calcular(atacante));
     }
 
+    /**
+     * Cambia la posición (Ataque/Defensa) de un monstruo del jugador en turno.
+     * Solo se puede una vez por turno y no después de atacar.
+     */
+    public void cambiarPosicion(Monstruo monstruo) throws ReglaDeBatallaException {
+        validarDueloEnCurso();
+        Objects.requireNonNull(monstruo, "Debes elegir un monstruo.");
+        if (!jugadorEnTurno.controla(monstruo)) {
+            throw new ReglaDeBatallaException("Solo puedes cambiar la posición de los monstruos de "
+                    + jugadorEnTurno.getNombre() + ", que tiene el turno.");
+        }
+        if (monstruo.isAtacoEsteTurno()) {
+            throw new ReglaDeBatallaException(monstruo.getNombre() + " ya atacó en este turno y no puede cambiar de posición.");
+        }
+        if (monstruo.isCambioPosicionEsteTurno()) {
+            throw new ReglaDeBatallaException(monstruo.getNombre() + " ya cambió de posición en este turno.");
+        }
+        monstruo.cambiarPosicion();
+    }
+
     private void validarAtacante(Monstruo atacante) throws ReglaDeBatallaException {
+        validarDueloEnCurso();
         Objects.requireNonNull(atacante, "Debes elegir un monstruo atacante.");
         if (!jugadorEnTurno.controla(atacante)) {
             throw new ReglaDeBatallaException(atacante.getNombre() + " no está en el campo de "
@@ -146,6 +183,9 @@ public class Duelo {
         }
         if (!atacante.estaEnAtaque()) {
             throw new ReglaDeBatallaException(atacante.getNombre() + " está en posición de defensa y no puede atacar.");
+        }
+        if (atacante.isAtacoEsteTurno()) {
+            throw new ReglaDeBatallaException(atacante.getNombre() + " ya atacó en este turno.");
         }
     }
 
@@ -157,6 +197,7 @@ public class Duelo {
         Jugador duelistaAtacante = jugadorEnTurno;
         Jugador rival = getRival();
         ultimoResultado = resultado;
+        atacante.registrarAtaque();
 
         duelistaAtacante.recibirDanio(resultado.getDanioAlAtacante());
         rival.recibirDanio(resultado.getDanioAlDefensor());
@@ -174,6 +215,14 @@ public class Duelo {
             afectado = rival.getNombre();
         }
         String texto = describir(atacante, objetivo, resultado, afectado);
+        if (rival.estaDerrotado()) {
+            ganador = duelistaAtacante;
+        } else if (duelistaAtacante.estaDerrotado()) {
+            ganador = rival;
+        }
+        if (ganador != null) {
+            texto += ". ¡" + ganador.getNombre() + " gana el duelo!";
+        }
 
         RegistroCombate registro = new RegistroCombate(LocalDateTime.now(), turno, duelistaAtacante.getNombre(),
                 atacante.getNombre(), rival.getNombre(),
@@ -201,5 +250,12 @@ public class Duelo {
                 ? afectado + " recibe " + resultado.getDanioInfligido() + " de daño"
                 : "sin daño";
         return destruidos + "; " + danio;
+    }
+
+    private void validarDueloEnCurso() throws ReglaDeBatallaException {
+        if (haTerminado()) {
+            throw new ReglaDeBatallaException("El duelo terminó: ganó " + ganador.getNombre()
+                    + ". Inicia un duelo nuevo para seguir jugando.");
+        }
     }
 }

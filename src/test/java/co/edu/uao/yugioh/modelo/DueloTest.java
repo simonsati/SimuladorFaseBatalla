@@ -41,7 +41,7 @@ class DueloTest {
 
     @Test
     @DisplayName("RF1: terminar el turno alterna a los duelistas")
-    void terminarTurnoAlternaDuelistas() {
+    void terminarTurnoAlternaDuelistas() throws ReglaDeBatallaException {
         duelo.terminarTurno();
         assertEquals(2, duelo.getTurno());
         assertSame(kaiba, duelo.getJugadorEnTurno());
@@ -139,6 +139,8 @@ class DueloTest {
 
         duelo.atacar(dragon, kuriboh);
         assertFalse(kaiba.tieneMonstruosEnCampo());
+        duelo.terminarTurno();
+        duelo.terminarTurno();
         RegistroCombate registro = duelo.atacar(dragon);
 
         assertEquals(5000, kaiba.getPuntosVida());
@@ -165,5 +167,61 @@ class DueloTest {
         assertEquals(8000, kaiba.getPuntosVida());
         assertTrue(duelo.getRegistros().isEmpty());
         assertNull(duelo.getUltimoResultado());
+    }
+
+    @Test
+    @DisplayName("RF3: cada monstruo ataca una sola vez por turno")
+    void unAtaquePorTurno() throws Exception {
+        Monstruo mago = new MonstruoNormal("Mago Oscuro", 2500, 2100);
+        duelo.invocar(yugi, mago);
+        duelo.atacar(mago);
+
+        assertThrows(ReglaDeBatallaException.class, () -> duelo.atacar(mago));
+        assertTrue(yugi.listarMonstruosQuePuedenAtacar().isEmpty());
+
+        duelo.terminarTurno();
+        duelo.terminarTurno();
+        assertEquals(1, yugi.listarMonstruosQuePuedenAtacar().size());
+    }
+
+    @Test
+    @DisplayName("RF3: el cambio de posición se permite una vez por turno, sin haber atacado y solo con monstruos propios")
+    void cambioDePosicion() throws Exception {
+        Monstruo mago = new MonstruoNormal("Mago Oscuro", 2500, 2100);
+        Monstruo guardian = new MonstruoNormal("Guardián Celta", 1400, 1200);
+        Monstruo dragon = new MonstruoNormal("Dragón Blanco de Ojos Azules", 3000, 2500);
+        duelo.invocar(yugi, mago);
+        duelo.invocar(yugi, guardian);
+        duelo.invocar(kaiba, dragon);
+
+        duelo.cambiarPosicion(mago);
+        assertEquals(Posicion.DEFENSA, mago.getPosicion());
+        assertThrows(ReglaDeBatallaException.class, () -> duelo.cambiarPosicion(mago));
+        assertThrows(ReglaDeBatallaException.class, () -> duelo.cambiarPosicion(dragon));
+
+        duelo.atacar(guardian, dragon);
+        assertFalse(yugi.controla(guardian));
+
+        duelo.terminarTurno();
+        duelo.cambiarPosicion(dragon);
+        assertEquals(Posicion.DEFENSA, dragon.getPosicion());
+    }
+
+    @Test
+    @DisplayName("RF3: cuando los LP del rival llegan a 0 el duelo termina y hay ganador")
+    void finDelDuelo() throws Exception {
+        Duelo corto = new Duelo(new Jugador("Yugi", 1000), new Jugador("Kaiba", 1000));
+        Monstruo mago = new MonstruoNormal("Mago Oscuro", 2500, 2100);
+        corto.invocar(corto.getJugador1(), mago);
+
+        RegistroCombate registro = corto.atacar(mago);
+
+        assertTrue(corto.haTerminado());
+        assertSame(corto.getJugador1(), corto.getGanador());
+        assertEquals(0, corto.getJugador2().getPuntosVida());
+        assertTrue(registro.getResultado().endsWith("¡Yugi gana el duelo!"));
+        assertThrows(ReglaDeBatallaException.class, () -> corto.terminarTurno());
+        assertThrows(ReglaDeBatallaException.class,
+                () -> corto.invocar(corto.getJugador2(), new MonstruoNormal("Tarde", 100, 100)));
     }
 }

@@ -164,4 +164,23 @@ class JugadorTest {
         assertEquals(1, jugador.getCementerio().size());
         assertEquals(guardian, jugador.getCementerio().get(0));
     }
+
+    @Test
+    @DisplayName("RF3: solo pueden atacar los monstruos en ataque que no han atacado en el turno")
+    void monstruosQuePuedenAtacar() throws ReglaDeBatallaException {
+        Jugador jugador = new Jugador("Yugi");
+        Monstruo mago = new MonstruoNormal("Mago Oscuro", 2500, 2100);
+        Monstruo elfa = new MonstruoNormal("Elfa Mística", 800, 2000, Posicion.DEFENSA, "");
+        Monstruo guardian = new MonstruoNormal("Guardián Celta", 1400, 1200);
+        jugador.invocar(mago);
+        jugador.invocar(elfa);
+        jugador.invocar(guardian);
+        guardian.registrarAtaque();
+
+        assertEquals(1, jugador.listarMonstruosQuePuedenAtacar().size());
+        assertEquals(mago, jugador.listarMonstruosQuePuedenAtacar().get(0));
+
+        jugador.prepararNuevoTurno();
+        assertEquals(2, jugador.listarMonstruosQuePuedenAtacar().size());
+    }
 }
