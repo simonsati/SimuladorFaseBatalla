@@ -2,9 +2,17 @@ package co.edu.uao.yugioh.controlador;
 
 import co.edu.uao.yugioh.modelo.Duelo;
 import co.edu.uao.yugioh.modelo.Jugador;
+import co.edu.uao.yugioh.modelo.Monstruo;
+import co.edu.uao.yugioh.modelo.MonstruoEfecto;
+import co.edu.uao.yugioh.modelo.MonstruoNormal;
+import co.edu.uao.yugioh.modelo.Posicion;
+import co.edu.uao.yugioh.modelo.ReglaDeBatallaException;
 import co.edu.uao.yugioh.vista.VentanaDuelo;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.table.DefaultTableModel;
 
 /**
  * Controlador del patrón MVC. Registra los eventos de la vista, valida lo que
@@ -15,6 +23,8 @@ import java.awt.event.ActionListener;
  * @author simonsati
  */
 public class ControladorDuelo implements ActionListener {
+
+    private static final int PESTANA_MONSTRUOS = 1;
 
     private final VentanaDuelo vista;
     private Duelo duelo;
@@ -35,6 +45,8 @@ public class ControladorDuelo implements ActionListener {
 
     private void registrarEventos() {
         vista.getBtnIniciarDuelo().addActionListener(this);
+        vista.getBtnInvocar().addActionListener(this);
+        vista.getBtnLimpiarMonstruo().addActionListener(this);
     }
 
     /**
@@ -42,6 +54,8 @@ public class ControladorDuelo implements ActionListener {
      */
     private void configurarCampos() {
         FiltroNumerico.aplicar(vista.getTxtLpIniciales(), 5);
+        FiltroNumerico.aplicar(vista.getTxtAtaque(), 4);
+        FiltroNumerico.aplicar(vista.getTxtDefensa(), 4);
     }
 
     @Override
@@ -49,6 +63,10 @@ public class ControladorDuelo implements ActionListener {
         Object fuente = evento.getSource();
         if (fuente == vista.getBtnIniciarDuelo()) {
             iniciarDuelo();
+        } else if (fuente == vista.getBtnInvocar()) {
+            invocarMonstruo();
+        } else if (fuente == vista.getBtnLimpiarMonstruo()) {
+            limpiarFormularioMonstruo();
         }
     }
 
@@ -57,8 +75,11 @@ public class ControladorDuelo implements ActionListener {
     // ------------------------------------------------------------------
 
     private void iniciarDuelo() {
-        crearDuelo(vista.getTxtJugador1().getText(), vista.getTxtJugador2().getText(),
+        boolean creado = crearDuelo(vista.getTxtJugador1().getText(), vista.getTxtJugador2().getText(),
                 vista.getTxtLpIniciales().getText());
+        if (creado) {
+            vista.getTabsPrincipal().setSelectedIndex(PESTANA_MONSTRUOS);
+        }
     }
 
     /**
@@ -93,10 +114,79 @@ public class ControladorDuelo implements ActionListener {
             vista.mostrarAdvertencia("Datos inválidos", ex.getMessage());
             return false;
         }
+        prepararFormularioMonstruos();
         actualizarVista();
         mostrarEstado("Duelo iniciado: " + nombre1 + " contra " + nombre2 + ", cada uno con " + lpIniciales
                 + " LP. Empieza " + nombre1 + ".");
         return true;
+    }
+
+    // ------------------------------------------------------------------
+    // RF2 - Gestión de cartas
+    // ------------------------------------------------------------------
+
+    private void prepararFormularioMonstruos() {
+        vista.getCmbDueno().setModel(new DefaultComboBoxModel<>(new String[]{
+            duelo.getJugador1().getNombre(), duelo.getJugador2().getNombre()}));
+        limpiarFormularioMonstruo();
+    }
+
+    private void invocarMonstruo() {
+        if (duelo == null) {
+            vista.mostrarAdvertencia("Sin duelo", "Primero registra a los duelistas e inicia el duelo.");
+            return;
+        }
+        String nombre = vista.getTxtNombreMonstruo().getText().trim();
+        String textoAtaque = vista.getTxtAtaque().getText().trim();
+        String textoDefensa = vista.getTxtDefensa().getText().trim();
+        if (nombre.isEmpty() || textoAtaque.isEmpty() || textoDefensa.isEmpty()) {
+            vista.mostrarAdvertencia("Datos incompletos", "El monstruo necesita nombre, ATQ y DEF.");
+            return;
+        }
+        try {
+            int ataque = Integer.parseInt(textoAtaque);
+            int defensa = Integer.parseInt(textoDefensa);
+            Posicion posicion = Posicion.desdeTexto((String) vista.getCmbPosicion().getSelectedItem());
+            String detalle = vista.getTxtDetalle().getText();
+            Monstruo monstruo = MonstruoEfecto.TIPO.equals(vista.getCmbTipo().getSelectedItem())
+                    ? new MonstruoEfecto(nombre, ataque, defensa, posicion, detalle)
+                    : new MonstruoNormal(nombre, ataque, defensa, posicion, detalle);
+            Jugador dueno = vista.getCmbDueno().getSelectedIndex() == 1 ? duelo.getJugador2() : duelo.getJugador1();
+            duelo.invocar(dueno, monstruo);
+            limpiarFormularioMonstruo();
+            actualizarVista();
+            mostrarEstado(monstruo.getNombre() + " fue invocado en el campo de " + dueno.getNombre()
+                    + " en posición de " + posicion + ".");
+        } catch (NumberFormatException ex) {
+            vista.mostrarAdvertencia("Dato inválido", "ATQ y DEF deben ser números enteros entre "
+                    + Monstruo.PUNTOS_MINIMOS + " y " + Monstruo.PUNTOS_MAXIMOS + ".");
+        } catch (IllegalArgumentException ex) {
+            vista.mostrarAdvertencia("Dato inválido", ex.getMessage());
+        } catch (ReglaDeBatallaException ex) {
+            vista.mostrarAdvertencia("Regla del juego", ex.getMessage());
+        }
+    }
+
+    private void limpiarFormularioMonstruo() {
+        vista.getTxtNombreMonstruo().setText("");
+        vista.getTxtAtaque().setText("");
+        vista.getTxtDefensa().setText("");
+        vista.getTxtDetalle().setText("");
+        vista.getCmbPosicion().setSelectedIndex(0);
+        vista.getCmbTipo().setSelectedIndex(0);
+        vista.getTxtNombreMonstruo().requestFocusInWindow();
+    }
+
+    private void actualizarTablaMonstruos() {
+        DefaultTableModel modelo = (DefaultTableModel) vista.getTblMonstruos().getModel();
+        modelo.setRowCount(0);
+        for (Jugador jugador : List.of(duelo.getJugador1(), duelo.getJugador2())) {
+            for (Monstruo monstruo : jugador.getCampo()) {
+                modelo.addRow(new Object[]{jugador.getNombre(), monstruo.getNombre(), monstruo.tipoDeCarta(),
+                    monstruo.getAtaque(), monstruo.getDefensa(), monstruo.getPosicion().getEtiqueta(),
+                    monstruo.describir()});
+            }
+        }
     }
 
     // ------------------------------------------------------------------
@@ -105,11 +195,13 @@ public class ControladorDuelo implements ActionListener {
 
     private void actualizarVista() {
         boolean hayDuelo = duelo != null;
+        vista.getTabsPrincipal().setEnabledAt(PESTANA_MONSTRUOS, hayDuelo);
         if (!hayDuelo) {
             vista.getLblTurno().setText("Duelo sin iniciar");
             return;
         }
         vista.getLblTurno().setText("Turno " + duelo.getTurno() + " · Ataca " + duelo.getJugadorEnTurno().getNombre());
+        actualizarTablaMonstruos();
     }
 
     private void mostrarEstado(String mensaje) {
